@@ -1,0 +1,286 @@
+{
+  "brand": {
+    "republicName": "Republic of Astoria"
+  },
+  "header": {
+    "homeTitle": "Back to homepage — CODE.GOUV.AOR",
+    "serviceTitle": "CODE.GOUV.AOR",
+    "serviceTagline": "Astoria's public digital infrastructure",
+    "loginLink": "Log in",
+    "githubTitle": "CODE.GOUV.AOR source repository — opens in a new window",
+    "accountLabel": "My account",
+    "logoutLink": "Log out",
+    "account": {
+      "profile": "My profile",
+      "settings": "Settings"
+    }
+  },
+  "nav": {
+    "primary": {
+      "definir": "Define",
+      "concevoir": "Design",
+      "construire": "Build",
+      "deployer": "Deploy",
+      "exploiter": "Operate",
+      "faireEvoluer": "Evolve"
+    },
+    "panel": {
+      "definirParagraph": "What are the rules, principles and references that define public digital technology?",
+      "concevoirParagraph": "How do we turn a public need into a digital solution?",
+      "construireParagraph": "How do we concretely build a digital service?",
+      "deployerParagraph": "How do we put a solution into production?",
+      "exploiterParagraph": "How do we sustainably run a public service?",
+      "evoluerParagraph": "How do we collectively improve and evolve public digital technology?",
+      "definirAllLink": "Explore the Define theme",
+      "concevoirAllLink": "Explore the Design theme",
+      "construireAllLink": "Explore the Build theme",
+      "deployerAllLink": "Explore the Deploy theme",
+      "exploiterAllLink": "Explore the Operate theme",
+      "evoluerAllLink": "Explore the Evolve theme",
+      "definirCategoryRegles": "Rules and principles",
+      "definirCategoryExigences": "Cross-cutting requirements",
+      "definirCategoryMatieres": "Resources",
+      "concevoirCategoryServices": "Methods",
+      "concevoirCategoryArchitecture": "Architecture",
+      "concevoirCategoryQualite": "Quality",
+      "construireCategoryDeveloppement": "Development",
+      "construireCategoryReutilisables": "Reusable components",
+      "construireCategoryLivraison": "Quality and delivery",
+      "construireCategoryInfrastructure": "Infrastructure and deployment",
+      "deployerCategoryInfrastructure": "Infrastructure",
+      "deployerCategoryLivraison": "Going to production",
+      "deployerCategoryRobustesse": "Robustness",
+      "exploiterCategoryObservabilite": "Observability",
+      "exploiterCategorySupervision": "Supervision and alerting",
+      "exploiterCategoryContinuite": "Service continuity",
+      "evoluerCategoryContribuer": "Contribute",
+      "evoluerCategoryEcosysteme": "Ecosystem and innovation",
+      "evoluerCategoryCycleVie": "Product lifecycle",
+      "principes": "Principles",
+      "standards": "Standards",
+      "architectureReference": "Reference architecture",
+      "gouvernanceTechnique": "Technical governance",
+      "securite": "Security",
+      "accessibilite": "Accessibility",
+      "interoperabilite": "Interoperability",
+      "souveraineteNumerique": "Digital sovereignty",
+      "donnees": "Data",
+      "openSource": "Open Source",
+      "conceptionServices": "Service design",
+      "parcoursUtilisateur": "User journeys",
+      "modelisation": "Modelling",
+      "choixTechnologiques": "Technology choices",
+      "architecture": "Architecture",
+      "apis": "APIs",
+      "identite": "Identity",
+      "resilience": "Resilience",
+      "referencesConception": "Design references",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "basesDeDonnees": "Databases",
+      "packages": "Packages",
+      "sdk": "SDK",
+      "cli": "CLI",
+      "ads": "ADS",
+      "tests": "Testing",
+      "ciCd": "CI/CD",
+      "infrastructureAsCode": "Infrastructure as Code",
+      "containers": "Containers",
+      "infrastructure": "Infrastructure",
+      "cloud": "Cloud",
+      "reseaux": "Networks",
+      "dns": "DNS",
+      "environnements": "Environments",
+      "hauteDisponibilite": "High availability",
+      "scalabilite": "Scalability",
+      "disasterRecovery": "Disaster recovery",
+      "monitoring": "Monitoring",
+      "observabilite": "Observability",
+      "logs": "Logs",
+      "metriques": "Metrics",
+      "traces": "Traces",
+      "alerting": "Alerting",
+      "incidents": "Incidents",
+      "performance": "Performance",
+      "slaSlo": "SLA / SLO",
+      "maintenance": "Maintenance",
+      "continuiteService": "Service continuity",
+      "contributions": "Contributions",
+      "rfc": "RFCs",
+      "roadmap": "Roadmap",
+      "retoursExperience": "Feedback",
+      "innovation": "Innovation",
+      "recherche": "Research",
+      "versions": "Releases",
+      "migrations": "Migrations",
+      "depreciations": "Deprecations",
+      "communaute": "Community",
+      "documentation": "Documentation",
+      "ressources": "Resources",
+      "projets": "Projects",
+      "templates": "Templates",
+      "designSystem": "Design System",
+      "github": "GitHub"
+    }
+  },
+  "footer": {
+    "contentDescription": "The public reference platform for defining, designing, building, deploying, operating and evolving Astoria's public digital infrastructure.",
+    "bottom": {
+      "openData": "Open Data",
+      "serviceStatus": "Service status",
+      "privacy": "Personal data",
+      "cookies": "Cookie management"
+    },
+    "license": "Unless otherwise stated, the contents of this platform are available under the <link>Open Licence 2.0</link>."
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "skipToFooter": "Skip to footer",
+    "openNewWindow": "Opens in a new window",
+    "backToTop": {
+      "ariaLabel": "Back to top"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "CODE.GOUV.AOR — Build public digital technology"
+    },
+    "hero": {
+      "title": "Build public digital technology.",
+      "lead": "We support Astoria's public administrations to make stronger <strong>use</strong> of open standards and shared digital commons, back the <strong>publication</strong> and pooling of source code, and <strong>build ties</strong> with the open-source ecosystem."
+    },
+    "doors": {
+      "title": "Standards <accent>for</accent> and <accent>by</accent> public administrations, <accent>with</accent> the agents 🧢",
+      "items": {
+        "forAdmin": {
+          "title": "For public administrations",
+          "desc": "Learn about and use the recommended standards and references in your information systems."
+        },
+        "byAdmin": {
+          "title": "By public administrations",
+          "desc": "Publish your source code under a free licence and explore what other administrations publish."
+        },
+        "community": {
+          "title": "The community",
+          "desc": "Enrich exchanges between public agents and contributors of Astoria's digital commons."
+        }
+      }
+    },
+    "band": {
+      "title": "The open-source and digital commons pole",
+      "text": "The open-source and digital commons pole supports Astoria's public administrations throughout the lifecycle of their digital services. On CODE.GOUV.AOR it publishes the open standards, methods, components and source code that structure public digital technology — to use them, share them and evolve them together."
+    },
+    "contributions": {
+      "title": "Your contributions are welcome!",
+      "items": {
+        "standard": {
+          "question": "Are you a public agent and want to propose a standard for public digital technology?",
+          "answer": "Every change to the shared standards starts with a public proposal: open your <link>RFC</link> and take part in the discussion."
+        },
+        "repositories": {
+          "question": "Are you a public administration and want to publish or reference your source code?",
+          "answer": "Follow the <link>Open Source</link> guide to publish your code under a free licence and reference your organisation's repositories in the public inventory."
+        },
+        "events": {
+          "question": "Do you want to propose a meetup, share feedback or join the community?",
+          "answer": "Head to the <link>Community</link> page to find the exchange spaces and events around Astoria's digital commons."
+        }
+      }
+    },
+    "follow": {
+      "newsletterTitle": "Stay up to date",
+      "newsletterText": "Latest RFCs, component releases and published standards: follow the platform's life on its public repository.",
+      "newsletterCta": "See the latest updates",
+      "socialTitle": "Follow us on social media"
+    },
+    "explore": {
+      "title": "Explore the platform",
+      "lead": "CODE is organised around the lifecycle of public digital technology — pick the stage that matches your need."
+    },
+    "lifecycle": {
+      "kicker": "The lifecycle",
+      "title": "How to build <accent>public</accent> digital technology",
+      "lead": "CODE is organised around the lifecycle of public digital technology. Each step is a doorway to its rules, methods, tools and communities."
+    },
+    "intentions": {
+      "kicker": "Getting started",
+      "title": "I want to build…",
+      "lead": "Pick your starting point — every need leads to the matching resources.",
+      "items": {
+        "website": "A public website",
+        "application": "An application",
+        "api": "An API",
+        "adminService": "A government service",
+        "infrastructure": "An infrastructure",
+        "package": "A package"
+      }
+    },
+    "foundations": {
+      "kicker": "The references",
+      "title": "The <accent>foundations</accent> of CODE",
+      "lead": "The cross-cutting references every public digital service must follow.",
+      "items": {
+        "architecture": "The recommended patterns and structuring choices for public systems.",
+        "securite": "Protecting services, identities and citizens' data.",
+        "apis": "Designing open, secure and well-documented interfaces.",
+        "donnees": "Structuring, sharing and reusing public data.",
+        "accessibilite": "Services usable by everyone, without exception.",
+        "openSource": "Open, auditable code reusable across the whole ecosystem."
+      }
+    },
+    "resources": {
+      "kicker": "The technical ecosystem",
+      "title": "Ecosystem resources",
+      "lead": "Reusable components and shared building blocks to build faster, better and consistently.",
+      "discover": "Discover",
+      "items": {
+        "packages": "Official libraries ready to use.",
+        "sdks": "Integration kits for your technical environments.",
+        "cli": "Command-line tools to run your services.",
+        "templates": "Starting points to bootstrap a compliant project.",
+        "apis": "Public data and service interfaces.",
+        "designSystem": "ADS, the design system of Astoria's public digital services."
+      }
+    },
+    "projects": {
+      "kicker": "Showcase",
+      "title": "What is built with CODE",
+      "lead": "Public services, tools and infrastructure built on the CODE standards.",
+      "emptyTitle": "No reference project yet.",
+      "emptyText": "Projects using the CODE standards will be listed here as soon as the public referencing process opens."
+    },
+    "community": {
+      "kicker": "The community",
+      "title": "Take part in <accent>public digital technology</accent>",
+      "lead": "Contributing to public digital technology does not require working for the State: standards, RFCs, components and projects are open to everyone.",
+      "items": {
+        "contribute": {
+          "label": "Contribute to CODE",
+          "description": "Bring code, documentation, tests or feedback."
+        },
+        "standard": {
+          "label": "Propose a standard",
+          "description": "Submit a shared rule to the public repository."
+        },
+        "rfc": {
+          "label": "Take part in an RFC",
+          "description": "Comment and co-build the proposed evolutions."
+        },
+        "package": {
+          "label": "Improve a package",
+          "description": "Fix, document and enrich the ecosystem components."
+        },
+        "explore": {
+          "label": "Explore the projects",
+          "description": "Discover what public teams are building with CODE."
+        }
+      }
+    }
+  },
+  "meta": {
+    "defaultTitle": "CODE.GOUV.AOR — The public platform of Astoria's digital technology",
+    "suffix": "CODE.GOUV.AOR",
+    "description": "The public reference platform for defining, designing, building, deploying, operating and evolving Astoria's public digital infrastructure.",
+    "searchPlaceholder": "Search in CODE"
+  }
+}

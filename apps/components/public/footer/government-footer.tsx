@@ -3,42 +3,72 @@
 import { Footer } from "@codegouvaor/react-ads/Footer";
 import type { FooterProps } from "@codegouvaor/react-ads/Footer";
 import { useTranslations } from "next-intl";
-import { footerNavigation, legalPaths, pageAnchors } from "@/lib/site-structure";
+import {
+  footerLegalLinks,
+  footerPlatformLinks,
+  legalPaths,
+  openDataUrl,
+  pageAnchors,
+} from "@/lib/site-structure";
 import { LocaleSwitcher } from "../locale-switcher";
 
 const HOME_PATH = "/";
 
 /** Official portal domains of the Republic of Astoria, shown in the footer. */
-const OFFICIAL_DOMAINS: string[] = [
-  "code.gouv.aor",
-  "service-public.gouv.aor",
-  "data.gouv.aor",
-];
+const ECOSYSTEM_DOMAINS: string[] = ["info.gouv.aor", "design.gouv.aor", "data.gouv.aor"];
 
 /**
- * Government Footer of the Astoria portal, modelled after info.gouv.fr:
- *  - brand block + “managed by” line,
- *  - five link columns (Actualités, Grands dossiers, Prévenir les risques,
- *    Outils, L'État et moi) fed by the centralized `site-structure`
- *    configuration,
- *  - official portal domains and the legal bottom bar.
+ * Footer of CODE.GOUV.AOR — the shared institutional base of the platform.
  *
- * ADS provides the markup (columns, accessibility line, bottom bar) and the
- * responsive behaviour. This component only decides *what* is shown — from
- * the centralized `site-structure` configuration and the message catalogs.
+ * It is built entirely from the centralized `site-structure` configuration
+ * and the message catalogs, so it can be reused as the official footer of
+ * the whole CODE ecosystem without page-specific implementation:
+ *
+ *  - the ecosystem portals (official domains) next to the institutional
+ *    identity and the platform mission,
+ *  - the platform-level destinations (Documentation, Standards, Ressources,
+ *    Projets, Communauté, GitHub) and the institutional bottom bar.
+ *
+ * The six lifecycle themes are intentionally left out of the footer: they
+ * belong to the main navigation of the platform, and the footer stays a
+ * sober, common base. ADS provides the markup and the responsive behaviour;
+ * this component only decides *what* is shown.
  */
 export function GovernmentFooter() {
   const t = useTranslations();
   const tNavPanel = useTranslations("nav.panel");
   const tBrand = useTranslations("brand");
 
-  const linkList = footerNavigation.map((column) => ({
-    categoryName: t(`footer.columns.${column.columnKey}.title`),
-    links: column.links.map(({ labelKey, href }) => ({
+  const platformItems: FooterProps.BottomItem[] = footerPlatformLinks.map(
+    ({ labelKey, href }) => ({
       text: tNavPanel(labelKey),
-      linkProps: { href },
-    })),
-  })) as FooterProps.LinkList.List;
+      iconId: labelKey === "github" ? "fr-icon-external-link-line" : undefined,
+      linkProps:
+        labelKey === "github"
+          ? {
+              href,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              title: t("header.githubTitle"),
+            }
+          : { href },
+    })
+  );
+
+  const legalItems: FooterProps.BottomItem[] = footerLegalLinks.map(
+    ({ labelKey, href, external }) => ({
+      text: t(`footer.bottom.${labelKey}`),
+      iconId: external ? "fr-icon-external-link-line" : undefined,
+      linkProps: external
+        ? {
+            href,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: t("common.openNewWindow"),
+          }
+        : { href },
+    })
+  );
 
   return (
     <Footer
@@ -58,32 +88,23 @@ export function GovernmentFooter() {
         title: t("header.homeTitle"),
       }}
       contentDescription={t("footer.contentDescription")}
-      domains={OFFICIAL_DOMAINS}
+      domains={ECOSYSTEM_DOMAINS}
       websiteMapLinkProps={{ href: legalPaths.sitemap }}
       accessibilityLinkProps={{ href: legalPaths.accessibility }}
       termsLinkProps={{ href: legalPaths.terms }}
       bottomItems={[
-        {
-          text: t("footer.bottom.privacy"),
-          linkProps: { href: legalPaths.privacy },
-        },
-        {
-          text: t("footer.bottom.cookies"),
-          linkProps: { href: legalPaths.cookies },
-        },
-        {
-          text: t("footer.bottom.publications"),
-          linkProps: { href: "/publications-officielles" },
-        },
+        ...platformItems,
+        ...legalItems,
+        // Language switcher rendered as a React node inside the bottom bar.
+        <LocaleSwitcher key="locale-switcher" />,
       ]}
       license={t.rich("footer.license", {
         link: (chunks) => (
-          <a href="https://code.gouv.aor/" target="_blank" rel="noopener noreferrer">
+          <a href={openDataUrl} target="_blank" rel="noopener noreferrer">
             {chunks}
           </a>
         ),
       })}
-      linkList={linkList}
     />
   );
 }

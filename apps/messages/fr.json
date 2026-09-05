@@ -1,0 +1,286 @@
+{
+  "brand": {
+    "republicName": "République d'Astoria"
+  },
+  "header": {
+    "homeTitle": "Retour à l'accueil — code.gouv.aor",
+    "serviceTitle": "Pôle open-source et numérique commun",
+    "serviceTagline": "La plateforme de référence pour construire le numérique public d’Astoria",
+    "loginLink": "Se connecter",
+    "githubTitle": "Dépôt source de code.gouv.aor — nouvelle fenêtre",
+    "accountLabel": "Mon compte",
+    "logoutLink": "Se déconnecter",
+    "account": {
+      "profile": "Mon profil",
+      "settings": "Paramètres"
+    }
+  },
+  "nav": {
+    "primary": {
+      "definir": "Définir",
+      "concevoir": "Concevoir",
+      "construire": "Construire",
+      "deployer": "Déployer",
+      "exploiter": "Exploiter",
+      "faireEvoluer": "Faire évoluer"
+    },
+    "panel": {
+      "definirParagraph": "Quelles sont les règles, principes et références qui définissent le numérique public ?",
+      "concevoirParagraph": "Comment transforme-t-on un besoin public en solution numérique ?",
+      "construireParagraph": "Comment réalise-t-on concrètement un service numérique ?",
+      "deployerParagraph": "Comment met-on une solution en production ?",
+      "exploiterParagraph": "Comment fait-on fonctionner durablement un service public ?",
+      "evoluerParagraph": "Comment améliore-t-on et fait-on évoluer collectivement le numérique public ?",
+      "definirAllLink": "Explorer le thème Définir",
+      "concevoirAllLink": "Explorer le thème Concevoir",
+      "construireAllLink": "Explorer le thème Construire",
+      "deployerAllLink": "Explorer le thème Déployer",
+      "exploiterAllLink": "Explorer le thème Exploiter",
+      "evoluerAllLink": "Explorer le thème Faire évoluer",
+      "definirCategoryRegles": "Règles et principes",
+      "definirCategoryExigences": "Exigences transverses",
+      "definirCategoryMatieres": "Ressources",
+      "concevoirCategoryServices": "Méthodes",
+      "concevoirCategoryArchitecture": "Architecture",
+      "concevoirCategoryQualite": "Qualité",
+      "construireCategoryDeveloppement": "Développement",
+      "construireCategoryReutilisables": "Composants réutilisables",
+      "construireCategoryLivraison": "Qualité et livraison",
+      "construireCategoryInfrastructure": "Infrastructure et déploiement",
+      "deployerCategoryInfrastructure": "Infrastructure",
+      "deployerCategoryLivraison": "Mise en production",
+      "deployerCategoryRobustesse": "Robustesse",
+      "exploiterCategoryObservabilite": "Observabilité",
+      "exploiterCategorySupervision": "Supervision et alerting",
+      "exploiterCategoryContinuite": "Continuité de service",
+      "evoluerCategoryContribuer": "Contribuer",
+      "evoluerCategoryEcosysteme": "Écosystème et innovation",
+      "evoluerCategoryCycleVie": "Cycle de vie des produits",
+      "principes": "Principes",
+      "standards": "Standards",
+      "architectureReference": "Architecture de référence",
+      "gouvernanceTechnique": "Gouvernance technique",
+      "securite": "Sécurité",
+      "accessibilite": "Accessibilité",
+      "interoperabilite": "Interopérabilité",
+      "souveraineteNumerique": "Souveraineté numérique",
+      "donnees": "Données",
+      "openSource": "Open Source",
+      "conceptionServices": "Conception de services",
+      "parcoursUtilisateur": "Parcours utilisateur",
+      "modelisation": "Modélisation",
+      "choixTechnologiques": "Choix technologiques",
+      "architecture": "Architecture",
+      "apis": "APIs",
+      "identite": "Identité",
+      "resilience": "Résilience",
+      "referencesConception": "Références de conception",
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "basesDeDonnees": "Bases de données",
+      "packages": "Packages",
+      "sdk": "SDK",
+      "cli": "CLI",
+      "ads": "ADS",
+      "tests": "Tests",
+      "ciCd": "CI/CD",
+      "infrastructureAsCode": "Infrastructure as Code",
+      "containers": "Containers",
+      "infrastructure": "Infrastructure",
+      "cloud": "Cloud",
+      "reseaux": "Réseaux",
+      "dns": "DNS",
+      "environnements": "Environnements",
+      "hauteDisponibilite": "Haute disponibilité",
+      "scalabilite": "Scalabilité",
+      "disasterRecovery": "Disaster Recovery",
+      "monitoring": "Monitoring",
+      "observabilite": "Observabilité",
+      "logs": "Logs",
+      "metriques": "Métriques",
+      "traces": "Traces",
+      "alerting": "Alerting",
+      "incidents": "Incidents",
+      "performance": "Performance",
+      "slaSlo": "SLA / SLO",
+      "maintenance": "Maintenance",
+      "continuiteService": "Continuité de service",
+      "contributions": "Contributions",
+      "rfc": "RFC",
+      "roadmap": "Roadmap",
+      "retoursExperience": "Retours d'expérience",
+      "innovation": "Innovation",
+      "recherche": "Recherche",
+      "versions": "Versions",
+      "migrations": "Migrations",
+      "depreciations": "Dépréciations",
+      "communaute": "Communauté",
+      "documentation": "Documentation",
+      "ressources": "Ressources",
+      "projets": "Projets",
+      "templates": "Templates",
+      "designSystem": "Design System",
+      "github": "GitHub"
+    }
+  },
+  "footer": {
+    "contentDescription": "La plateforme publique de référence pour définir, concevoir, construire, déployer, exploiter et faire évoluer le numérique public d'Astoria.",
+    "bottom": {
+      "openData": "Open Data",
+      "serviceStatus": "Statut du service",
+      "privacy": "Données personnelles",
+      "cookies": "Gestion des cookies"
+    },
+    "license": "Sauf mention contraire, les contenus de cette plateforme sont disponibles sous <link>licence ouverte 2.0</link>."
+  },
+  "common": {
+    "skipToContent": "Aller au contenu",
+    "skipToFooter": "Aller au pied de page",
+    "openNewWindow": "Ouvrir dans une nouvelle fenêtre",
+    "backToTop": {
+      "ariaLabel": "Revenir en haut de page"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Pôle open-source et numérique commun"
+    },
+    "hero": {
+      "title": "Construire le numérique public.",
+      "lead": "Nous accompagnons les administrations d'Astoria pour renforcer leur <strong>utilisation</strong> des standards et des communs numériques, soutenir leurs démarches de <strong>publication</strong> et de mutualisation des codes sources et <strong>créer des liens</strong> avec l'écosystème open source."
+    },
+    "doors": {
+      "title": "Des standards <accent>pour</accent> et <accent>par</accent> les administrations, <accent>avec</accent> les agents 🧢",
+      "items": {
+        "forAdmin": {
+          "title": "Pour l'administration",
+          "desc": "Mieux connaître et utiliser les standards et référentiels recommandés dans vos systèmes d'information."
+        },
+        "byAdmin": {
+          "title": "Par les administrations",
+          "desc": "Publier vos codes sources sous licence libre et explorer ceux des autres administrations."
+        },
+        "community": {
+          "title": "La communauté",
+          "desc": "Enrichir les échanges entre agents publics et contributeurs des communs numériques d'Astoria."
+        }
+      }
+    },
+    "band": {
+      "title": "Le pôle open-source et numérique commun",
+      "text": "Le pôle open-source et numérique commun accompagne les administrations d'Astoria tout au long du cycle de vie de leurs services numériques. Il publie sur CODE.GOUV.AOR les standards, méthodes, composants et codes sources ouverts qui structurent le numérique public — pour les utiliser, les partager et les faire évoluer ensemble."
+    },
+    "contributions": {
+      "title": "Vos contributions sont les bienvenues !",
+      "items": {
+        "standard": {
+          "question": "Vous êtes un agent public et souhaitez proposer un standard au référentiel du numérique public ?",
+          "answer": "Toutes les évolutions du référentiel passent par une proposition publique : ouvrez votre <link>RFC</link> et participez aux échanges."
+        },
+        "repositories": {
+          "question": "Vous êtes une administration et souhaitez publier ou référencer vos codes sources ?",
+          "answer": "Suivez le guide <link>Open Source</link> pour publier vos codes sous licence libre et référencer les dépôts de votre organisme dans l'inventaire public."
+        },
+        "events": {
+          "question": "Vous souhaitez proposer une rencontre, un retour d'expérience ou rejoindre la communauté ?",
+          "answer": "Rendez-vous sur la page <link>Communauté</link> pour découvrir les espaces d'échange et les rendez-vous autour des communs numériques."
+        }
+      }
+    },
+    "follow": {
+      "newsletterTitle": "Restez informé des évolutions",
+      "newsletterText": "Dernières RFC, mises à jour des composants et standards publiés : suivez la vie de la plateforme sur son dépôt public.",
+      "newsletterCta": "Voir les dernières évolutions",
+      "socialTitle": "Suivez-nous sur nos réseaux"
+    },
+    "explore": {
+      "title": "Explorer la plateforme",
+      "lead": "CODE est organisé autour du cycle de vie du numérique public : choisissez l'étape qui correspond à votre besoin."
+    },
+    "lifecycle": {
+      "kicker": "Le cycle de vie",
+      "title": "Comment construire le numérique <accent>public</accent> ?",
+      "lead": "CODE est organisé autour du cycle de vie du numérique public. Chaque étape est une porte d'entrée vers ses règles, méthodes, outils et communautés."
+    },
+    "intentions": {
+      "kicker": "Pour se lancer",
+      "title": "Je veux construire…",
+      "lead": "Choisissez votre point de départ : chaque besoin mène vers les ressources qui lui correspondent.",
+      "items": {
+        "website": "Un site public",
+        "application": "Une application",
+        "api": "Une API",
+        "adminService": "Un service administratif",
+        "infrastructure": "Une infrastructure",
+        "package": "Un package"
+      }
+    },
+    "foundations": {
+      "kicker": "Les références",
+      "title": "Les <accent>fondations</accent> de CODE",
+      "lead": "Les références transverses que tout service numérique public doit respecter.",
+      "items": {
+        "architecture": "Les choix structurants et les patrons recommandés pour les systèmes publics.",
+        "securite": "Protéger les services, les identités et les données des citoyens.",
+        "apis": "Concevoir des interfaces ouvertes, sûres et documentées.",
+        "donnees": "Structurer, partager et réutiliser les données publiques.",
+        "accessibilite": "Des services utilisables par toutes et tous, sans exception.",
+        "openSource": "Un code ouvert, auditable et réutilisable par tout l'écosystème."
+      }
+    },
+    "resources": {
+      "kicker": "L'écosystème technique",
+      "title": "Les ressources de l'écosystème",
+      "lead": "Composants réutilisables et briques partagées pour construire plus vite, mieux et en cohérence.",
+      "discover": "Découvrir",
+      "items": {
+        "packages": "Des bibliothèques officielles prêtes à l'emploi.",
+        "sdks": "Des kits d'intégration pour vos environnements techniques.",
+        "cli": "Des outils en ligne de commande pour piloter vos services.",
+        "templates": "Des points de départ pour démarrer un projet conforme.",
+        "apis": "Des interfaces de données et de services publics.",
+        "designSystem": "ADS, le système de design des services numériques d'Astoria."
+      }
+    },
+    "projects": {
+      "kicker": "Réalisations",
+      "title": "Ce qui est construit avec CODE",
+      "lead": "Les services, outils et infrastructures publics qui s'appuient sur les standards de CODE.",
+      "emptyTitle": "Aucune réalisation référencée pour le moment.",
+      "emptyText": "Les projets utilisant les standards de CODE seront présentés ici dès l'ouverture du processus de référencement public."
+    },
+    "community": {
+      "kicker": "La communauté",
+      "title": "Participez au <accent>numérique public</accent>",
+      "lead": "Participer au numérique public ne demande pas d'être employé par l'État : standards, RFC, composants et projets sont ouverts à toutes et à tous.",
+      "items": {
+        "contribute": {
+          "label": "Contribuer à CODE",
+          "description": "Apporter du code, de la documentation, des tests ou des retours."
+        },
+        "standard": {
+          "label": "Proposer un standard",
+          "description": "Soumettre une règle partagée au référentiel public."
+        },
+        "rfc": {
+          "label": "Participer à une RFC",
+          "description": "Commenter et coconstruire les évolutions proposées."
+        },
+        "package": {
+          "label": "Améliorer un package",
+          "description": "Corriger, documenter et enrichir les composants de l'écosystème."
+        },
+        "explore": {
+          "label": "Explorer les projets",
+          "description": "Découvrir ce que les équipes publiques construisent avec CODE."
+        }
+      }
+    }
+  },
+  "meta": {
+    "defaultTitle": "CODE.GOUV.AOR — La plateforme publique du numérique d'Astoria",
+    "suffix": "CODE.GOUV.AOR",
+    "description": "La plateforme publique de référence pour définir, concevoir, construire, déployer, exploiter et faire évoluer le numérique public d'Astoria.",
+    "searchPlaceholder": "Rechercher dans CODE"
+  }
+}

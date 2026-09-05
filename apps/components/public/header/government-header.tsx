@@ -10,7 +10,13 @@ import type { MegaMenuProps } from "@codegouvaor/react-ads/MainNavigation/MegaMe
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDomainUrl } from "@/lib/domains";
-import { pageAnchors, primaryNavigation, searchPath } from "@/lib/site-structure";
+import {
+  codeRepositoryUrl,
+  lifecycleThemes,
+  pageAnchors,
+  searchPath,
+  type LifecycleTheme,
+} from "@/lib/site-structure";
 import { useAuth } from "@/context/AuthContext";
 import { UserAccountMenu } from "@/components/public/header/user-account-menu";
 import { siteAccountConfig } from "@/lib/site-config";
@@ -20,40 +26,30 @@ const isNavItemActive = (href: string, pathname: string): boolean =>
   href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
 /**
- * Collect every href reachable from a mega-menu item (categories, featured
- * link, leader link) so the parent tab can be marked active when the user
- * lands on any child page — even if the child href lives outside the
- * parent's own path tree (e.g. /decryptages under Actualites -> /news).
+ * Collect every href reachable from a theme mega-menu (theme hub, leader
+ * link and category links) so the parent tab can be marked active when the
+ * user lands on any child page.
  */
-function collectChildHrefs(item: (typeof primaryNavigation)[number]): string[] {
-  if (item.type === "link") return [];
-  const hrefs: string[] = [item.leader.link.href];
-  if (item.featuredLink) hrefs.push(item.featuredLink.href);
-  for (const cat of item.categories ?? []) {
-    if (cat.mainLink) hrefs.push(cat.mainLink.href);
+function collectChildHrefs(theme: LifecycleTheme): string[] {
+  const hrefs: string[] = [theme.href];
+  for (const cat of theme.categories) {
     for (const link of cat.links) hrefs.push(link.href);
   }
   return hrefs;
 }
 
 /**
- * Government Header of the Astoria portal.
+ * Header of CODE.GOUV.AOR.
  *
- * Main navigation — the permanent architecture of the portal, six entries,
- * each answering one user intention:
+ * The platform is organised around the lifecycle of the public digital
+ * infrastructure. The permanent architecture of the header is therefore the
+ * six lifecycle themes — Définir, Concevoir, Construire, Déployer,
+ * Exploiter, Faire évoluer — each opening a mega-menu panel describing the
+ * resources of that phase. Sub-resources never clutter the main bar.
  *
- *   Le Gouvernement      -> Qui gouverne ?
- *   L'action publique    -> Que fait la Republique ?
- *   Services publics     -> Puis-je faire avec l'Etat ?
- *   Actualites           -> Que se passe-t-il actuellement ?
- *   La Republique        -> Comment fonctionne l'Etat ?
- *   Informations utiles  -> O trouver une information pratique ?
- *
- * When the user is authenticated, the "Se connecter" link in the
- * quick-access toolbar is hidden and a custom account menu
- * (`UserAccountMenu`) is rendered instead. The menu content is driven
- * by `siteAccountConfig` so each site can present a different account
- * interface without touching this component.
+ * The quick-access toolbar keeps a search box, an external link to the
+ * source repository (marked as external) and the account entry (login, or
+ * the `UserAccountMenu` when authenticated — driven by `siteAccountConfig`).
  */
 export function GovernmentHeader() {
   const t = useTranslations();
@@ -63,72 +59,31 @@ export function GovernmentHeader() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const navigationItems: MainNavigationProps.Item[] = primaryNavigation.map((item) => {
-    const childHrefs = collectChildHrefs(item);
+  const navigationItems: MainNavigationProps.Item[] = lifecycleThemes.map((theme) => {
+    const childHrefs = collectChildHrefs(theme);
     const isActive =
-      isNavItemActive(item.href, pathname) ||
+      isNavItemActive(theme.href, pathname) ||
       childHrefs.some((href) => isNavItemActive(href, pathname));
 
-    const common = {
-      isActive,
-      text: tPrimaryNav(item.labelKey),
-    };
-
-    if (item.type === "link") {
-      return { ...common, linkProps: { href: item.href } };
-    }
-
-    const categories: MegaMenuProps.Category[] = [
-      ...(item.featuredLink
-        ? [
-            {
-              categoryMainLink: {
-                text: tNavPanel(item.featuredLink.titleKey),
-                linkProps: { href: item.featuredLink.href },
-              },
-              links: [
-                {
-                  text: t("home.news.featured.title"),
-                  linkProps: { href: item.featuredLink.href },
-                  isActive: isNavItemActive(item.featuredLink.href, pathname),
-                },
-              ],
-            } satisfies MegaMenuProps.Category,
-          ]
-        : []),
-      ...(item.categories ?? []).map((category): MegaMenuProps.Category =>
-        category.mainLink
-          ? {
-              categoryMainLink: {
-                text: tNavPanel(category.mainLink.labelKey),
-                linkProps: { href: category.mainLink.href },
-              },
-              links: category.links.map((link) => ({
-                text: tNavPanel(link.labelKey),
-                linkProps: { href: link.href },
-                isActive: isNavItemActive(link.href, pathname),
-              })),
-            }
-          : {
-              categoryMainText: tNavPanel(category.titleKey),
-              links: category.links.map((link) => ({
-                text: tNavPanel(link.labelKey),
-                linkProps: { href: link.href },
-                isActive: isNavItemActive(link.href, pathname),
-              })),
-            }
-      ),
-    ];
+    const categories: MegaMenuProps.Category[] = theme.categories.map((category) => ({
+      categoryMainText: tNavPanel(category.titleKey),
+      links: category.links.map((link) => ({
+        text: tNavPanel(link.labelKey),
+        linkProps: { href: link.href },
+        isActive: isNavItemActive(link.href, pathname),
+      })),
+    }));
 
     return {
-      ...common,
+      isActive,
+      text: tPrimaryNav(theme.labelKey),
       megaMenu: {
         leader: {
-          title: tNavPanel(item.leader.titleKey),
-          paragraph: tNavPanel(item.leader.paragraphKey),
+          title: tPrimaryNav(theme.labelKey),
+          paragraph: tNavPanel(theme.leader.paragraphKey),
           link: {
-            text: tNavPanel(item.leader.link.labelKey),
-            linkProps: { href: item.leader.link.href },
+            text: tNavPanel(theme.leader.linkLabelKey),
+            linkProps: { href: theme.href },
           },
         },
         categories,
@@ -156,10 +111,10 @@ export function GovernmentHeader() {
         linkProps: { href: getDomainUrl("sso", "/login") },
       });
     }
-
+    
     items.push(headerFooterDisplayItem);
     return items;
-  }, [isAuthenticated, isAuthLoading, t]);
+  }, [isAuthenticated, isAuthLoading, t, tNavPanel]);
 
   return (
     <>
