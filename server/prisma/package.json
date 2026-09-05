@@ -1,7 +1,7 @@
 {
-  "name": "@info-gouv/prisma",
+  "name": "@code-gouv/prisma",
   "version": "1.0.0",
-  "description": "Prisma schema and database layer for the Info Gouv Website Database Layer.",
+  "description": "Prisma schema and database layer for the Code Developer Platform Database Layer.",
   "private": true,
   "main": "schema.prisma",
   "scripts": {

@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/codegouvaor/info/server/src/config"
+	"github.com/codegouvaor/code/server/src/config"
 	"golang.org/x/crypto/argon2"
 )
 

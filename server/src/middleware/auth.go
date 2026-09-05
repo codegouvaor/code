@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/codegouvaor/info/server/src/interfaces"
-	"github.com/codegouvaor/info/server/src/utils"
+	"github.com/codegouvaor/code/server/src/interfaces"
+	"github.com/codegouvaor/code/server/src/utils"
 )
 
 type contextKey string

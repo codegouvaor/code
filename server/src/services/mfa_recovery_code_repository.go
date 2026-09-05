@@ -5,8 +5,8 @@ import (
 
 	"time"
 
-	"github.com/codegouvaor/info/server/src/models"
-	"github.com/codegouvaor/info/server/src/utils"
+	"github.com/codegouvaor/code/server/src/models"
+	"github.com/codegouvaor/code/server/src/utils"
 	"gorm.io/gorm"
 )
 
