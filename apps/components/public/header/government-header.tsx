@@ -11,11 +11,13 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDomainUrl } from "@/lib/domains";
 import {
-  codeRepositoryUrl,
-  lifecycleThemes,
+  headerNavigation,
   pageAnchors,
   searchPath,
-  type LifecycleTheme,
+  type HeaderNavCategory,
+  type HeaderNavEntry,
+  type HeaderNavLink,
+  type HeaderNavMegaEntry,
 } from "@/lib/site-structure";
 import { useAuth } from "@/context/AuthContext";
 import { UserAccountMenu } from "@/components/public/header/user-account-menu";
@@ -25,31 +27,52 @@ import { siteAccountConfig } from "@/lib/site-config";
 const isNavItemActive = (href: string, pathname: string): boolean =>
   href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
-/**
- * Collect every href reachable from a theme mega-menu (theme hub, leader
- * link and category links) so the parent tab can be marked active when the
- * user lands on any child page.
- */
-function collectChildHrefs(theme: LifecycleTheme): string[] {
-  const hrefs: string[] = [theme.href];
-  for (const cat of theme.categories) {
-    for (const link of cat.links) hrefs.push(link.href);
+/** Every destination reachable from a mega-menu panel (heading links and
+ *  rows) — used to mark the section current. */
+function collectMegaMenuHrefs(section: HeaderNavMegaEntry): string[] {
+  const hrefs: string[] = [];
+  for (const category of section.categories) {
+    if (category.href) hrefs.push(category.href);
+    for (const link of category.links) hrefs.push(link.href);
   }
   return hrefs;
 }
 
+/** Hrefs used to decide whether an entry of the bar is current. */
+function entryMatchHrefs(entry: HeaderNavEntry): string[] {
+  if (entry.kind === "link") return [...(entry.matchHrefs ?? [entry.href])];
+  return [...(entry.matchHrefs ?? collectMegaMenuHrefs(entry))];
+}
+
+/** External-link props (new window + accessible title). GitHub links carry the
+ *  dedicated header title, everything else the generic one. */
+const externalTitle = (link: HeaderNavLink, headerTitle: string, openWindowTitle: string) =>
+  link.labelKey === "github" ? headerTitle : openWindowTitle;
+
 /**
- * Header of CODE.GOUV.AOR.
+ * Header of CODE.GOUV.AOR — the public portal of reference for building
+ * Astoria's public digital technology.
  *
- * The platform is organised around the lifecycle of the public digital
- * infrastructure. The permanent architecture of the header is therefore the
- * six lifecycle themes — Définir, Concevoir, Construire, Déployer,
- * Exploiter, Faire évoluer — each opening a mega-menu panel describing the
- * resources of that phase. Sub-resources never clutter the main bar.
+ * The navigation is a government-portal information architecture answering
+ * « Que puis-je trouver sur CODE.GOUV.AOR ? »:
  *
- * The quick-access toolbar keeps a search box, an external link to the
- * source repository (marked as external) and the account entry (login, or
- * the `UserAccountMenu` when authenticated — driven by `siteAccountConfig`).
+ *   Accueil       — simple link to the homepage (the portal entry point).
+ *   Actualités    — simple link to the news channel of the platform
+ *                   (external releases feed).
+ *   Communauté    — mega-menu: who builds public digital technology.
+ *   Documentation — mega-menu: « Comment construire le numérique public ? »,
+ *                   with the six lifecycle themes as its columns. The six
+ *                   themes are not six entries of the bar.
+ *   Ressources    — mega-menu: the concrete building blocks.
+ *   À propos      — mega-menu: institutional pages of the platform.
+ *
+ * The four mega-menus each expose four to six columns (defined in
+ * `headerNavigation`). The data lives in `headerNavigation` (site-structure);
+ * this component only decides how to render an entry. The quick-access
+ * toolbar keeps the search box and the account entry (login, or the
+ * `UserAccountMenu` when authenticated — driven by `siteAccountConfig`).
+ * The source repository stays reachable from the navigation (Communauté,
+ * À propos) and the footer.
  */
 export function GovernmentHeader() {
   const t = useTranslations();
@@ -59,37 +82,96 @@ export function GovernmentHeader() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const navigationItems: MainNavigationProps.Item[] = lifecycleThemes.map((theme) => {
-    const childHrefs = collectChildHrefs(theme);
-    const isActive =
-      isNavItemActive(theme.href, pathname) ||
-      childHrefs.some((href) => isNavItemActive(href, pathname));
+  /** Top-level highlight: only one entry is current at a time (first match
+   *  wins in bar order). Accueil matches `/`; Actualités is neutral (its
+   *  panel is a feed of shortcuts); the other sections match their panel
+   *  destinations. */
+  const isEntryCurrent = React.useMemo(() => {
+    const hrefLists = headerNavigation.map(entryMatchHrefs);
+    let alreadyMatched = false;
+    return hrefLists.map((hrefs) => {
+      if (alreadyMatched) return false;
+      const matches = hrefs.some((href) => isNavItemActive(href, pathname));
+      if (matches) alreadyMatched = true;
+      return matches;
+    });
+  }, [pathname]);
 
-    const categories: MegaMenuProps.Category[] = theme.categories.map((category) => ({
-      categoryMainText: tNavPanel(category.titleKey),
-      links: category.links.map((link) => ({
-        text: tNavPanel(link.labelKey),
-        linkProps: { href: link.href },
+  /** One mega-menu column: heading (plain text or a destination) + rows. */
+  const buildCategory = (category: HeaderNavCategory): MegaMenuProps.Category => {
+    const title = category.titlePrimary
+      ? tPrimaryNav(category.titleKey)
+      : tNavPanel(category.titleKey);
+
+    const links = category.links.map((link) => {
+      const isExternal = link.external === true;
+      return {
+        text: link.primary ? tPrimaryNav(link.labelKey) : tNavPanel(link.labelKey),
+        linkProps: {
+          href: link.href,
+          ...(isExternal && {
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: externalTitle(link, t("header.githubTitle"), t("common.openNewWindow")),
+          }),
+        },
         isActive: isNavItemActive(link.href, pathname),
-      })),
-    }));
+      };
+    });
+
+    if (category.href !== undefined) {
+      return {
+        categoryMainLink: {
+          text: title,
+          linkProps: {
+            href: category.href,
+            ...(category.external && {
+              target: "_blank",
+              rel: "noopener noreferrer",
+              title: t("common.openNewWindow"),
+            }),
+          },
+        },
+        links,
+      };
+    }
+
+    return { categoryMainText: title, links };
+  };
+
+  /** One navigation entry of the ADS header. */
+  const buildEntry = (entry: HeaderNavEntry, index: number): MainNavigationProps.Item => {
+    const label = tPrimaryNav(entry.labelKey);
+    const isActive = isEntryCurrent[index];
+
+    if (entry.kind === "link") {
+      return {
+        isActive,
+        text: label,
+        linkProps: {
+          href: entry.href,
+          ...(entry.external && {
+            target: "_blank",
+            rel: "noopener noreferrer",
+            title: t("common.openNewWindow"),
+          }),
+        },
+      };
+    }
 
     return {
       isActive,
-      text: tPrimaryNav(theme.labelKey),
+      text: label,
       megaMenu: {
-        leader: {
-          title: tPrimaryNav(theme.labelKey),
-          paragraph: tNavPanel(theme.leader.paragraphKey),
-          link: {
-            text: tNavPanel(theme.leader.linkLabelKey),
-            linkProps: { href: theme.href },
-          },
-        },
-        categories,
+        // No leader band (title + description) on purpose: a mega-menu only
+        // exposes its sections as link columns, closed by the ADS “Fermer”
+        // button that MegaMenu renders itself.
+        categories: entry.categories.map(buildCategory),
       },
     };
-  });
+  };
+
+  const navigationItems: MainNavigationProps.Item[] = headerNavigation.map(buildEntry);
 
   const handleSearch = (text: string) => {
     const query = text.trim();
@@ -99,8 +181,8 @@ export function GovernmentHeader() {
   // Auth state for conditional account UI
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
-  // Quick-access items — the login link is replaced by the account menu
-  // when the user is authenticated.
+  // Quick-access items — the login link, replaced by the account menu when
+  // the user is authenticated, then the display settings.
   const quickAccessItems = React.useMemo(() => {
     const items: HeaderProps.QuickAccessItem[] = [];
 
@@ -111,7 +193,7 @@ export function GovernmentHeader() {
         linkProps: { href: getDomainUrl("sso", "/login") },
       });
     }
-    
+
     items.push(headerFooterDisplayItem);
     return items;
   }, [isAuthenticated, isAuthLoading, t, tNavPanel]);

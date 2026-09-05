@@ -34,7 +34,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     // Authenticated users on non-auth routes go back to the calendar.
     if (isAuthenticated && !isAllowedAuthenticatedRoute) {
-      window.location.href = getDomainUrl("info", "/");
+      window.location.href = getDomainUrl("code", "/");
     }
   }, [isAuthenticated, isLoading, isAllowedAuthenticatedRoute, isPublicAuthRoute]);
 

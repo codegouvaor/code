@@ -17,6 +17,12 @@
   },
   "nav": {
     "primary": {
+      "home": "Accueil",
+      "actualites": "Actualités",
+      "communaute": "Communauté",
+      "documentation": "Documentation",
+      "ressources": "Ressources",
+      "aPropos": "À propos",
       "definir": "Définir",
       "concevoir": "Concevoir",
       "construire": "Construire",
@@ -120,7 +126,21 @@
       "projets": "Projets",
       "templates": "Templates",
       "designSystem": "Design System",
-      "github": "GitHub"
+      "github": "GitHub",
+      "contribuer": "Contribuer",
+      "communauteCategoryProposer": "Proposer & débattre",
+      "design": "Design",
+      "developpement": "Développement",
+      "apisEtDonnees": "APIs & données",
+      "openData": "Open Data",
+      "communauteCategoryEvolutions": "Évolutions & retours",
+      "decouvrir": "Découvrir",
+      "documentationCategoryCycle": "Déployer, exploiter & faire évoluer",
+      "aProposStandards": "Standards & références",
+      "aProposOpenSource": "Open source & transparence",
+      "aProposEvolutions": "Évolutions & participation",
+      "aProposPlus": "En savoir plus",
+      "releases": "Notes de version"
     }
   },
   "footer": {
