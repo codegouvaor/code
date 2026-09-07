@@ -127,8 +127,8 @@ importers:
         specifier: 1.1.15
         version: 1.1.15(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0)
       '@radix-ui/react-label':
-        specifier: 2.1.12
-        version: 2.1.12(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0)
+        specifier: 2.1.15
+        version: 2.1.15(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0)
       '@radix-ui/react-menubar':
         specifier: 1.1.16
         version: 1.1.16(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0)
@@ -3493,8 +3493,8 @@ packages:
       react: 19.1.0
     dev: false
 
-  /@radix-ui/react-label@2.1.12(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0):
-    resolution: {integrity: sha512-dxioNQ7VOrYKKWJIxMRmJPDSWQN0gNCUy3zaqUSBwsuFAiFzI0yLGJr2q3ml07k/HlOk55N8KEfwa1ZgfprJ3w==}
+  /@radix-ui/react-label@2.1.15(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0):
+    resolution: {integrity: sha512-o/rdYEwZTTo5tjknnPeyQFU45kUC4i/XyeDPP+HGyi6XqpOP6Zf5Ya5vh/Yfe9Id5JiuWnnAx2XqIeD3UYZt0g==}
     peerDependencies:
       '@types/react': '*'
       '@types/react-dom': '*'
@@ -3506,7 +3506,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@radix-ui/react-primitive': 2.1.7(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0)
+      '@radix-ui/react-primitive': 2.1.10(@types/react-dom@19.1.11)(@types/react@19.1.17)(react-dom@19.1.0)(react@19.1.0)
       '@types/react': 19.1.17
       '@types/react-dom': 19.1.11(@types/react@19.1.17)
       react: 19.1.0
