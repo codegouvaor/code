@@ -84,6 +84,7 @@ export default async function SitemapPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: PAGE_NAMESPACE });
+  const tPrimary = await getTranslations({ locale, namespace: "nav.primary" });
   const tPanel = await getTranslations({ locale, namespace: "nav.panel" });
 
   return (
@@ -98,7 +99,7 @@ export default async function SitemapPage({ params }: PageProps) {
       >
         {primaryNavigation.map((section) => (
           <section key={section.labelKey} style={themeGroupStyle}>
-            <h3 style={sectionHeadingStyle}>{tPanel(`${section.labelKey}.title`)}</h3>
+            <h3 style={sectionHeadingStyle}>{tPrimary(section.labelKey)}</h3>
             <div className="fr-grid-row fr-grid-row--gutters">
               {section.primaryItems.map((theme) => (
                 <div key={theme.labelKey} className="fr-col-12 fr-col-md-6 fr-col-lg-3">

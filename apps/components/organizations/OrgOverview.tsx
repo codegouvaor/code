@@ -27,7 +27,7 @@ import {
   type RepositoryLanguage,
   type RepositorySortOption,
   type RepositoryData,
-} from "@/app/(platform)/[owner]/_components/repositories";
+} from "../../app/(public)/[locale]/[platform]/[owner]/_components/repositories";
 
 interface OrgOverviewProps {
   organization: OrganizationProfile;

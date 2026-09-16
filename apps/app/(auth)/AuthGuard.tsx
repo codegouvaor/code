@@ -4,12 +4,11 @@ import * as React from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { RouteTransition } from "@/components/route-transition";
-import { getDomainUrl } from "@/lib/domains";
 
 // Routes accessible to authenticated users within (auth)
 const AUTHENTICATED_ALLOWED_ROUTES = ["/mfa-validate", "/mfa-setup", "/callback", "/verify-email"];
 // Routes accessible without authentication within (auth)
-const PUBLIC_AUTH_ROUTES = ["/login", "/register"];
+const PUBLIC_AUTH_ROUTES = ["/login"];
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,13 +27,13 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     // Unauthenticated users: only allow public auth routes (login)
     if (!isAuthenticated && !isPublicAuthRoute) {
-      window.location.href = getDomainUrl("sso", "/login");
+      window.location.href = "/login";
       return;
     }
 
-    // Authenticated users on non-auth routes go back to the calendar.
+    // Authenticated users on non-auth routes go back to the home page.
     if (isAuthenticated && !isAllowedAuthenticatedRoute) {
-      window.location.href = getDomainUrl("code", "/");
+      window.location.href = "/";
     }
   }, [isAuthenticated, isLoading, isAllowedAuthenticatedRoute, isPublicAuthRoute]);
 

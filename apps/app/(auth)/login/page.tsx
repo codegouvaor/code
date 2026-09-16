@@ -1,73 +1,136 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { AdsProvider } from "@/components/public/ads/ads-provider";
-import LoginForm from "@/components/auth/login-form";
+import { AuthPanel } from "@/components/auth/auth-panel";
 import "@codegouvaor/react-ads/main.css";
 
 export const metadata: Metadata = {
-  title: "Login — Official Portal",
+  title: "Sign in or create an account — Official Portal",
   description:
-    "Sign in to your personal space on the official portal of the Republic of Astoria.",
+    "Sign in to your personal space or create an account on the official portal of the Republic of Astoria.",
 };
 
-export default function LoginPage() {
+const pageStyle: CSSProperties = {
+  minHeight: "100dvh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "1rem",
+  background: "var(--ads-color-surface-muted)",
+};
+
+const containerStyle: CSSProperties = {
+  width: "100%",
+  maxWidth: "28rem",
+};
+
+const brandStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "0.625rem",
+  marginBottom: "1.25rem",
+  textDecoration: "none",
+  color: "var(--ads-color-text)",
+};
+
+const brandTitleStyle: CSSProperties = {
+  fontWeight: 700,
+  fontSize: "1rem",
+  lineHeight: 1.3,
+};
+
+const brandSubtitleStyle: CSSProperties = {
+  fontSize: "0.8125rem",
+  color: "var(--ads-color-text-muted)",
+};
+
+const cardStyle: CSSProperties = {
+  background: "var(--ads-color-background)",
+  border: "1px solid var(--ads-color-border)",
+  borderRadius: "0.5rem",
+  padding: "1.25rem",
+  boxShadow: "0 0.375rem 1rem rgb(0 0 0 / 8%)",
+};
+
+const footerStyle: CSSProperties = {
+  marginTop: "1rem",
+};
+
+const footerTextStyle: CSSProperties = {
+  margin: "0 0 0.5rem",
+  fontSize: "0.75rem",
+  lineHeight: 1.4,
+  textAlign: "center",
+  color: "var(--ads-color-text-muted)",
+};
+
+const footerLinksStyle: CSSProperties = {
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "center",
+  gap: "0.125rem 1rem",
+};
+
+const footerLinkStyle: CSSProperties = {
+  fontSize: "0.75rem",
+  color: "var(--ads-color-link)",
+  textUnderlineOffset: "0.2em",
+};
+
+const FOOTER_LINKS = [
+  { href: "/legal/accessibility", label: "Accessibility" },
+  { href: "/legal/mentions-legales", label: "Legal notices" },
+  { href: "/legal/donnees-personnelles", label: "Personal data" },
+  { href: "/legal/cookies", label: "Cookies" },
+];
+
+type PageProps = { searchParams: Promise<{ tab?: string }> };
+
+export default async function LoginPage({ searchParams }: PageProps) {
+  await searchParams;
+
   return (
     <AdsProvider lang="en">
-      <div className="gov-login">
-        <div className="gov-login__container">
+      <div style={pageStyle}>
+        <div style={containerStyle}>
           {/* Header — Republic branding */}
-          <div className="gov-login__header">
-            <a href="/" className="gov-login__logo-link" title="Back to homepage">
-              <img
-                src="/astoria-gouv.png"
-                alt="Republic of Astoria"
-                className="gov-login__logo"
-                width={56}
-                height={56}
-              />
-              <div className="gov-login__brand">
-                <span className="gov-login__brand-title">Official Portal</span>
-                <span className="gov-login__brand-subtitle">
-                  Republic of Astoria
-                </span>
-              </div>
-            </a>
-          </div>
-
-          {/* Login card */}
-          <div className="gov-login__card">
-            <div className="gov-login__card-header">
-              <h1 className="gov-login__title">Sign in</h1>
-              <p className="gov-login__subtitle">
-                Access your personal space to manage your services and
-                documents.
-              </p>
+          <a href="/" style={brandStyle} title="Back to homepage">
+            <img
+              src="/astoria-gouv.png"
+              alt="Republic of Astoria"
+              width={56}
+              height={56}
+            />
+            <div>
+              <div style={brandTitleStyle}>Official Portal</div>
+              <div style={brandSubtitleStyle}>Republic of Astoria</div>
             </div>
+          </a>
 
-            <div className="gov-login__card-body">
-              <LoginForm />
-            </div>
+          {/* Login / Register card */}
+          <div style={cardStyle}>
+            <AuthPanel />
           </div>
 
           {/* Footer links */}
-          <div className="gov-login__footer">
-            <p className="gov-login__footer-text">
+          <div style={footerStyle}>
+            <p style={footerTextStyle}>
               This site is protected by an authentication system. Any
               unauthorised access attempt may be subject to criminal
               prosecution.
             </p>
-            <ul className="gov-login__footer-links">
-              <li>
-                <a href="/legal/accessibility">Accessibility</a>
-              </li>
-              <li>
-                <a href="/legal/mentions-legales">Legal notices</a>
-              </li>
-              <li>
-                <a href="/legal/donnees-personnelles">Personal data</a>
-              </li>
-              <li>
-                <a href="/legal/cookies">Cookies</a>
-              </li>
+            <ul style={footerLinksStyle}>
+              {FOOTER_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} style={footerLinkStyle}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

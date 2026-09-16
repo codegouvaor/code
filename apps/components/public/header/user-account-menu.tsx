@@ -13,6 +13,10 @@ import { siteAccountConfig } from "@/lib/site-config";
  *
  * The menu content is driven by `siteAccountConfig` so each site can
  * present a different account interface without touching this component.
+ *
+ * The appearance uses the ADS design tokens (`var(--ads-*)`, provided by
+ * `@codegouvaor/react-ads/main.css`) through inline styles — no local
+ * stylesheet.
  */
 export function UserAccountMenu() {
   const { user, logout, isLoading } = useAuth();
@@ -59,31 +63,57 @@ export function UserAccountMenu() {
   const displayName = user.displayName || user.name || user.email;
 
   return (
-    <div className="gov-account-menu">
+    <div style={{ position: "relative", zIndex: 850 }}>
       <button
         ref={buttonRef}
         type="button"
-        className="gov-account-menu__trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-controls="account-menu-dropdown"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          padding: "0.5rem 0.75rem",
+          fontSize: "0.875rem",
+          fontWeight: 600,
+          lineHeight: 1.5,
+          color: "var(--ads-color-text)",
+          background: "transparent",
+          border: "1px solid var(--ads-color-border)",
+          borderRadius: "0.25rem",
+          cursor: "pointer",
+        }}
       >
         {user.avatarUrl ? (
           <img
             src={user.avatarUrl}
             alt=""
-            className="gov-account-menu__avatar"
             width={28}
             height={28}
+            style={{ width: "1.75rem", height: "1.75rem", borderRadius: "50%", objectFit: "cover" }}
           />
         ) : (
-          <span className="fr-icon-account-circle-line gov-account-menu__icon" aria-hidden="true" />
+          <span
+            className="fr-icon-account-circle-line"
+            aria-hidden="true"
+            style={{ fontSize: "1.25rem", lineHeight: 1, color: "var(--ads-color-text-muted)" }}
+          />
         )}
-        <span className="gov-account-menu__name">{displayName}</span>
+        <span style={{ maxWidth: "10rem", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {displayName}
+        </span>
         <span
-          className={`fr-icon-arrow-down-s-line gov-account-menu__chevron ${isOpen ? "gov-account-menu__chevron--open" : ""}`}
+          className="fr-icon-arrow-down-s-line"
           aria-hidden="true"
+          style={{
+            fontSize: "0.75rem",
+            lineHeight: 1,
+            color: "var(--ads-color-text-muted)",
+            transform: isOpen ? "rotate(180deg)" : undefined,
+            transition: "transform 0.15s ease",
+          }}
         />
       </button>
 
@@ -91,28 +121,69 @@ export function UserAccountMenu() {
         <div
           ref={menuRef}
           id="account-menu-dropdown"
-          className="gov-account-menu__dropdown"
           role="menu"
           aria-label={t(siteAccountConfig.labelKey)}
+          style={{
+            position: "absolute",
+            top: "100%",
+            right: 0,
+            marginTop: "0.25rem",
+            minWidth: "14rem",
+            background: "var(--ads-color-background)",
+            border: "1px solid var(--ads-color-border)",
+            borderRadius: "0.25rem",
+            boxShadow: "0 4px 12px rgba(28, 35, 43, 0.12)",
+            zIndex: 800,
+          }}
         >
           {/* User info header */}
-          <div className="gov-account-menu__header">
-            <span className="gov-account-menu__header-name">{displayName}</span>
-            <span className="gov-account-menu__header-email">{user.email}</span>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.125rem",
+              padding: "0.875rem 1rem",
+              borderBottom: "1px solid var(--ads-color-border)",
+            }}
+          >
+            <span style={{ fontSize: "0.9375rem", fontWeight: 700, lineHeight: 1.3 }}>
+              {displayName}
+            </span>
+            <span
+              style={{
+                fontSize: "0.8125rem",
+                lineHeight: 1.4,
+                color: "var(--ads-color-text-muted)",
+              }}
+            >
+              {user.email}
+            </span>
           </div>
 
           {/* Menu items */}
-          <ul className="gov-account-menu__list" role="none">
+          <ul role="none" style={{ listStyle: "none", margin: "0", padding: "0.25rem 0" }}>
             {siteAccountConfig.items.map((item) => (
               <li key={item.labelKey} role="none">
                 <a
                   href={item.href}
-                  className="gov-account-menu__item"
                   role="menuitem"
                   onClick={() => setIsOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.625rem",
+                    padding: "0.5rem 1rem",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
+                    textDecoration: "none",
+                  }}
                 >
                   {item.iconId && (
-                    <span className={`${item.iconId} gov-account-menu__item-icon`} aria-hidden="true" />
+                    <span
+                      className={item.iconId}
+                      aria-hidden="true"
+                      style={{ fontSize: "1.125rem", lineHeight: 1, color: "var(--ads-color-text-muted)" }}
+                    />
                   )}
                   {t(item.labelKey)}
                 </a>
@@ -121,17 +192,34 @@ export function UserAccountMenu() {
           </ul>
 
           {/* Logout */}
-          <div className="gov-account-menu__footer">
+          <div style={{ padding: "0.25rem 0", borderTop: "1px solid var(--ads-color-border)" }}>
             <button
               type="button"
-              className="gov-account-menu__item gov-account-menu__item--destructive"
               role="menuitem"
               onClick={() => {
                 setIsOpen(false);
                 void logout();
               }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.625rem",
+                width: "100%",
+                padding: "0.5rem 1rem",
+                fontSize: "0.875rem",
+                lineHeight: 1.5,
+                textAlign: "left",
+                color: "var(--ads-color-danger)",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
             >
-              <span className="fr-icon-logout-box-r-line gov-account-menu__item-icon" aria-hidden="true" />
+              <span
+                className="fr-icon-logout-box-r-line"
+                aria-hidden="true"
+                style={{ fontSize: "1.125rem", lineHeight: 1, color: "var(--ads-color-danger)" }}
+              />
               {t(siteAccountConfig.logoutLabelKey)}
             </button>
           </div>

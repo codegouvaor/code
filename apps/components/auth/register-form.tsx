@@ -6,6 +6,12 @@ import { PasswordInput } from "@codegouvaor/react-ads/blocks/PasswordInput";
 import { Button } from "@codegouvaor/react-ads/Button";
 import { useAuth } from "@/context/AuthContext";
 
+const formStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+};
+
 export default function RegisterForm() {
   const { register, isLoading } = useAuth();
 
@@ -70,12 +76,25 @@ export default function RegisterForm() {
   }
 
   return (
-    <form className="gov-login-form" onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate style={formStyle}>
       {/* Error alert */}
       {error && (
-        <div className="gov-login-form__alert" role="alert">
+        <div
+          role="alert"
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "0.5rem",
+            padding: "0.75rem 1rem",
+            border: "1px solid var(--ads-color-danger)",
+            background: "var(--ads-color-surface-muted)",
+            color: "var(--ads-color-danger)",
+            fontSize: "0.9375rem",
+            lineHeight: 1.5,
+          }}
+        >
           <span className="fr-icon-error-line" aria-hidden="true" />
-          <p className="gov-login-form__alert-text">{error}</p>
+          <span>{error}</span>
         </div>
       )}
 
@@ -149,35 +168,16 @@ export default function RegisterForm() {
       />
 
       {/* Submit */}
-      <div className="gov-login-form__submit">
-        <Button
-          type="submit"
-          priority="primary"
-          size="large"
-          disabled={isSubmitting || isLoading}
-          iconId={
-            isSubmitting ? "fr-icon-refresh-line" : "fr-icon-user-add-line"
-          }
-          iconPosition="left"
-        >
-          {isSubmitting ? "Creating account…" : "Create account"}
-        </Button>
-      </div>
-
-      {/* Divider */}
-      <div className="gov-login-form__divider">
-        <span className="gov-login-form__divider-text">or</span>
-      </div>
-
-      {/* Login link */}
-      <div className="gov-login-form__register">
-        <p className="gov-login-form__register-text">
-          Already have an account?{" "}
-          <a href="/login" className="gov-login-form__register-link">
-            Sign in
-          </a>
-        </p>
-      </div>
+      <Button
+        type="submit"
+        priority="primary"
+        size="large"
+        disabled={isSubmitting || isLoading}
+        iconId={isSubmitting ? "fr-icon-refresh-line" : "fr-icon-user-add-line"}
+        iconPosition="left"
+      >
+        {isSubmitting ? "Creating account…" : "Create account"}
+      </Button>
     </form>
   );
 }

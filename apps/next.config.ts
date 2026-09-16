@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: "../",
   },
-  allowedDevOrigins: ["info.gouv.aor", "api.info.gouv.aor", "sso.info.gouv.aor", "info.gouv.localhost", "api.info.gouv.localhost", "sso.gouv.localhost"],
+  allowedDevOrigins: ["code.gouv.localhost", "code.gouv.aor", "www.code.gouv.aor", "info.gouv.aor", "api.info.gouv.aor", "sso.info.gouv.aor", "info.gouv.localhost", "api.info.gouv.localhost", "sso.gouv.localhost"],
   outputFileTracingExcludes: {
     "*": ["test/**"],
   },

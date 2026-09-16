@@ -28,7 +28,11 @@
       "construire": "Construire",
       "deployer": "Déployer",
       "exploiter": "Exploiter",
-      "faireEvoluer": "Faire évoluer"
+      "faireEvoluer": "Faire évoluer",
+      "explorer": "Explorer",
+      "projets": "Projets",
+      "organisations": "Organisations",
+      "developpement": "Développement"
     },
     "panel": {
       "definirParagraph": "Quelles sont les règles, principes et références qui définissent le numérique public ?",
@@ -130,7 +134,6 @@
       "contribuer": "Contribuer",
       "communauteCategoryProposer": "Proposer & débattre",
       "design": "Design",
-      "developpement": "Développement",
       "apisEtDonnees": "APIs & données",
       "openData": "Open Data",
       "communauteCategoryEvolutions": "Évolutions & retours",
@@ -140,7 +143,77 @@
       "aProposOpenSource": "Open source & transparence",
       "aProposEvolutions": "Évolutions & participation",
       "aProposPlus": "En savoir plus",
-      "releases": "Notes de version"
+      "releases": "Notes de version",
+      "explorerLeaderTitle": "Explorer l'écosystème",
+      "explorerLeaderParagraph": "Découvrez les projets, organisations et communautés qui construisent le numérique public d'Astoria.",
+      "explorerLeaderLink": "Explorer les projets",
+      "projetsLeaderTitle": "Les projets et dépôts de Code",
+      "projetsLeaderParagraph": "La plateforme des projets et dépôts du secteur public : explorer, publier et suivre les évolutions.",
+      "projetsLeaderLink": "Ouvrir la plateforme de projets",
+      "organisationsLeaderTitle": "Organisations et communautés",
+      "organisationsLeaderParagraph": "Les organismes, équipes, développeurs et communautés qui font vivre le numérique public.",
+      "organisationsLeaderLink": "Explorer les organisations",
+      "developpementLeaderTitle": "Développer les services publics",
+      "developpementLeaderParagraph": "Les outils, intégrations et plateformes pour construire des services numériques publics.",
+      "developpementLeaderLink": "Commencer le développement",
+      "documentationLeaderTitle": "La documentation du numérique public",
+      "documentationLeaderParagraph": "Guides, références et standards pour définir, concevoir, construire, déployer, exploiter et faire évoluer un service public.",
+      "documentationLeaderLink": "Consulter la documentation",
+      "ressourcesLeaderTitle": "Les ressources techniques",
+      "ressourcesLeaderParagraph": "APIs, SDKs, composants et référentiels réutilisables pour construire plus vite et en cohérence.",
+      "ressourcesLeaderLink": "Voir les ressources",
+      "communauteLeaderTitle": "Rejoindre la communauté",
+      "communauteLeaderParagraph": "Contribuer au code, proposer des standards, participer aux échanges et faire évoluer le numérique public.",
+      "communauteLeaderLink": "Rejoindre la communauté",
+      "explorerCategoryDécouvrir": "Découvrir",
+      "explorerCategoryActivite": "Activité",
+      "explorerCategorySujets": "Sujets",
+      "explorerCategoryRecherche": "Recherche",
+      "projetsCategoryPlateforme": "La plateforme",
+      "projetsCategoryPublier": "Publier",
+      "projetsCategoryCatalogue": "Catalogue",
+      "projetsCategoryVersions": "Versions",
+      "orgCategoryOrganisations": "Organisations",
+      "orgCategoryCommunautes": "Communautés",
+      "orgCategoryGouvernance": "Gouvernance",
+      "orgCategoryDecouvrir": "Découvrir",
+      "devCategoryOutils": "Outils",
+      "devCategoryIntegration": "Intégration",
+      "devCategoryFrontend": "Frontend",
+      "devCategoryPlateformes": "Plateformes",
+      "docCategoryDefinir": "Définir",
+      "docCategoryConcevoir": "Concevoir",
+      "docCategoryConstruire": "Construire",
+      "docCategoryCycle": "Déployer, exploiter & faire évoluer",
+      "resCategoryApis": "APIs & données",
+      "resCategoryComposants": "Composants",
+      "resCategoryDesign": "Design",
+      "resCategoryInfrastructure": "Infrastructure",
+      "comCategoryContribuer": "Contribuer",
+      "comCategoryProposer": "Proposer & débattre",
+      "comCategoryEvolutions": "Évolutions",
+      "comCategoryDecouvrir": "Découvrir",
+      "communautes": "Communautés",
+      "nouveautes": "Nouveautés",
+      "rechercheGlobale": "Recherche globale",
+      "equipes": "Équipes",
+      "developpeurs": "Développeurs",
+      "repositories": "Dépôts",
+      "issues": "Issues",
+      "pulls": "Pull requests",
+      "notifications": "Notifications",
+      "newRepo": "Nouveau dépôt",
+      "newOrg": "Nouvelle organisation",
+      "newProject": "Nouveau projet",
+      "importRepo": "Importer un dépôt",
+      "marketplace": "Marketplace",
+      "webhooks": "Webhooks",
+      "gitlab": "GitLab",
+      "giteria": "Giteria",
+      "deployer": "Déployer",
+      "exploiter": "Exploiter",
+      "faireEvoluer": "Faire évoluer",
+      "organisations": "Organisations"
     }
   },
   "footer": {
@@ -149,9 +222,13 @@
       "openData": "Open Data",
       "serviceStatus": "Statut du service",
       "privacy": "Données personnelles",
-      "cookies": "Gestion des cookies"
+      "cookies": "Gestion des cookies",
+      "contact": "Contact",
+      "planDuPortail": "Plan du portail",
+      "documentsOpposables": "Documents opposables",
+      "publications": "Publications officielles"
     },
-    "license": "Sauf mention contraire, les contenus de cette plateforme sont disponibles sous <link>licence ouverte 2.0</link>."
+    "license": "Sauf mention contraire, les contenus de cette plateforme sont disponibles sous <link>licence APSL</link>."
   },
   "common": {
     "skipToContent": "Aller au contenu",
@@ -163,138 +240,244 @@
   },
   "home": {
     "meta": {
-      "title": "Pôle open-source et numérique commun"
+      "title": "CODE.GOUV.AOR — La plateforme développeur du numérique public d'Astoria"
     },
     "hero": {
-      "title": "Pôle open-source et numérique commun.",
-      "lead": "Nous accompagnons les administrations d'Astoria pour renforcer leur <strong>utilisation</strong> des standards et des communs numériques, soutenir leurs démarches de <strong>publication</strong> et de mutualisation des codes sources et <strong>créer des liens</strong> avec l'écosystème open source."
-    },
-    "doors": {
-      "title": "Des standards <accent>pour</accent> et <accent>par</accent> les administrations, <accent>avec</accent> les agents 🧢",
-      "items": {
-        "forAdmin": {
-          "title": "Pour l'administration",
-          "desc": "Mieux connaître et utiliser les standards et référentiels recommandés dans vos systèmes d'information."
-        },
-        "byAdmin": {
-          "title": "Par les administrations",
-          "desc": "Publier vos codes sources sous licence libre et explorer ceux des autres administrations."
-        },
-        "community": {
-          "title": "La communauté",
-          "desc": "Enrichir les échanges entre agents publics et contributeurs des communs numériques d'Astoria."
-        }
-      }
-    },
-    "band": {
-      "title": "Le pôle open-source et numérique commun",
-      "text": "Le pôle open-source et numérique commun accompagne les administrations d'Astoria tout au long du cycle de vie de leurs services numériques. Il publie sur CODE.GOUV.AOR les standards, méthodes, composants et codes sources ouverts qui structurent le numérique public — pour les utiliser, les partager et les faire évoluer ensemble."
-    },
-    "contributions": {
-      "title": "Vos contributions sont les bienvenues !",
-      "items": {
-        "standard": {
-          "question": "Vous êtes un agent public et souhaitez proposer un standard au référentiel du numérique public ?",
-          "answer": "Toutes les évolutions du référentiel passent par une proposition publique : ouvrez votre <link>RFC</link> et participez aux échanges."
-        },
-        "repositories": {
-          "question": "Vous êtes une administration et souhaitez publier ou référencer vos codes sources ?",
-          "answer": "Suivez le guide <link>Open Source</link> pour publier vos codes sous licence libre et référencer les dépôts de votre organisme dans l'inventaire public."
-        },
-        "events": {
-          "question": "Vous souhaitez proposer une rencontre, un retour d'expérience ou rejoindre la communauté ?",
-          "answer": "Rendez-vous sur la page <link>Communauté</link> pour découvrir les espaces d'échange et les rendez-vous autour des communs numériques."
-        }
-      }
-    },
-    "follow": {
-      "newsletterTitle": "Restez informé des évolutions",
-      "newsletterText": "Dernières RFC, mises à jour des composants et standards publiés : suivez la vie de la plateforme sur son dépôt public.",
-      "newsletterCta": "Voir les dernières évolutions",
-      "socialTitle": "Suivez-nous sur nos réseaux"
+      "kicker": "Plateforme développeur",
+      "title": "Le numérique public, en code.",
+      "lead": "CODE est la plateforme développeur de l'administration d'Astoria : un point d'entrée commun vers les projets, organisations, documentations, standards, APIs, SDKs et ressources techniques du secteur public.",
+      "primaryCta": "Explorer les projets",
+      "secondaryCta": "Documentation"
     },
     "explore": {
-      "title": "Explorer la plateforme",
-      "lead": "CODE est organisé autour du cycle de vie du numérique public : choisissez l'étape qui correspond à votre besoin."
-    },
-    "lifecycle": {
-      "kicker": "Le cycle de vie",
-      "title": "Comment construire le numérique <accent>public</accent> ?",
-      "lead": "CODE est organisé autour du cycle de vie du numérique public. Chaque étape est une porte d'entrée vers ses règles, méthodes, outils et communautés."
-    },
-    "intentions": {
-      "kicker": "Pour se lancer",
-      "title": "Je veux construire…",
-      "lead": "Choisissez votre point de départ : chaque besoin mène vers les ressources qui lui correspondent.",
+      "kicker": "Explorer",
+      "title": "Explorer Code",
+      "lead": "Les portes d'entrée de la plateforme pour trouver projets, équipes, documentation et ressources techniques.",
       "items": {
-        "website": "Un site public",
-        "application": "Une application",
-        "api": "Une API",
-        "adminService": "Un service administratif",
-        "infrastructure": "Une infrastructure",
-        "package": "Un package"
-      }
-    },
-    "foundations": {
-      "kicker": "Les références",
-      "title": "Les <accent>fondations</accent> de CODE",
-      "lead": "Les références transverses que tout service numérique public doit respecter.",
-      "items": {
-        "architecture": "Les choix structurants et les patrons recommandés pour les systèmes publics.",
-        "securite": "Protéger les services, les identités et les données des citoyens.",
-        "apis": "Concevoir des interfaces ouvertes, sûres et documentées.",
-        "donnees": "Structurer, partager et réutiliser les données publiques.",
-        "accessibilite": "Des services utilisables par toutes et tous, sans exception.",
-        "openSource": "Un code ouvert, auditable et réutilisable par tout l'écosystème."
-      }
-    },
-    "resources": {
-      "kicker": "L'écosystème technique",
-      "title": "Les ressources de l'écosystème",
-      "lead": "Composants réutilisables et briques partagées pour construire plus vite, mieux et en cohérence.",
-      "discover": "Découvrir",
-      "items": {
-        "packages": "Des bibliothèques officielles prêtes à l'emploi.",
-        "sdks": "Des kits d'intégration pour vos environnements techniques.",
-        "cli": "Des outils en ligne de commande pour piloter vos services.",
-        "templates": "Des points de départ pour démarrer un projet conforme.",
-        "apis": "Des interfaces de données et de services publics.",
-        "designSystem": "ADS, le système de design des services numériques d'Astoria."
+        "projets": {
+          "title": "Projets",
+          "desc": "Les projets logiciels publics et leurs dépôts, portés par l'écosystème d'Astoria."
+        },
+        "organisations": {
+          "title": "Organisations",
+          "desc": "Les organisations et équipes qui construisent le numérique public."
+        },
+        "documentation": {
+          "title": "Documentation",
+          "desc": "Guides, références et documentation technique pour construire des services."
+        },
+        "standards": {
+          "title": "Standards",
+          "desc": "Les référentiels et règles partagés du numérique public."
+        },
+        "apis": {
+          "title": "APIs",
+          "desc": "Les interfaces de données et de services publics."
+        },
+        "sdks": {
+          "title": "SDKs",
+          "desc": "Les kits d'intégration pour vos environnements techniques."
+        }
       }
     },
     "projects": {
-      "kicker": "Réalisations",
-      "title": "Ce qui est construit avec CODE",
-      "lead": "Les services, outils et infrastructures publics qui s'appuient sur les standards de CODE.",
-      "emptyTitle": "Aucune réalisation référencée pour le moment.",
-      "emptyText": "Les projets utilisant les standards de CODE seront présentés ici dès l'ouverture du processus de référencement public."
-    },
-    "community": {
-      "kicker": "La communauté",
-      "title": "Participez au <accent>numérique public</accent>",
-      "lead": "Participer au numérique public ne demande pas d'être employé par l'État : standards, RFC, composants et projets sont ouverts à toutes et à tous.",
+      "kicker": "Projets",
+      "title": "Les projets publics",
+      "lead": "Les projets logiciels publics de l'administration, rassemblés dans une interface commune quel que soit leur hébergeur.",
+      "modelTitle": "Un référencement interopérable",
+      "modelText": "Sur Code, un projet est indépendant de la forge qui héberge son code : un projet fait référence à un ou plusieurs dépôts, reliés à une plateforme de développement.",
       "items": {
-        "contribute": {
-          "label": "Contribuer à CODE",
-          "description": "Apporter du code, de la documentation, des tests ou des retours."
+        "project": {
+          "title": "Projet",
+          "desc": "Un service ou un outil public, décrit et documenté."
         },
-        "standard": {
-          "label": "Proposer un standard",
-          "description": "Soumettre une règle partagée au référentiel public."
+        "binding": {
+          "title": "Liaison de dépôt",
+          "desc": "La référence vers les dépôts qui composent le projet."
         },
-        "rfc": {
-          "label": "Participer à une RFC",
-          "description": "Commenter et coconstruire les évolutions proposées."
-        },
-        "package": {
-          "label": "Améliorer un package",
-          "description": "Corriger, documenter et enrichir les composants de l'écosystème."
-        },
-        "explore": {
-          "label": "Explorer les projets",
-          "description": "Découvrir ce que les équipes publiques construisent avec CODE."
+        "forge": {
+          "title": "Forge",
+          "desc": "GitHub, GitLab, Giteria ou toute forge interopérable."
         }
+      },
+      "emptyTitle": "Aucun projet référencé pour le moment.",
+      "emptyText": "Les projets publics seront présentés ici dès l'ouverture du référencement. En attendant, explorez les dépôts publics de la plateforme.",
+      "cta": "Voir tous les projets"
+    },
+    "ecosystem": {
+      "kicker": "Interopérabilité",
+      "title": "Un écosystème ouvert",
+      "lead": "Code constitue une interface commune pour l'écosystème développeur public, tout en restant interopérable avec les plateformes de développement existantes.",
+      "text": "Un projet référencé sur Code peut être hébergé sur GitHub, GitLab, Giteria ou toute forge compatible. Code ne remplace pas ces plateformes : il les référence et les rend visibles dans un espace unique dédié au secteur public.",
+      "platformsTitle": "Plateformes intégrées",
+      "platforms": {
+        "github": "GitHub",
+        "gitlab": "GitLab",
+        "giteria": "Giteria"
       }
+    },
+    "resources": {
+      "kicker": "Développer",
+      "title": "Développer les services publics",
+      "lead": "Les ressources pour construire des services numériques publics : composants, outils et référentiels techniques.",
+      "items": {
+        "apis": {
+          "title": "APIs",
+          "desc": "Interfaces de données et de services publics, documentées."
+        },
+        "sdks": {
+          "title": "SDKs",
+          "desc": "Kits d'intégration pour vos environnements techniques."
+        },
+        "composants": {
+          "title": "Composants",
+          "desc": "Briques réutilisables conformes au design system."
+        },
+        "outils": {
+          "title": "Outils",
+          "desc": "CLI et outils en ligne de commande pour piloter vos services."
+        },
+        "services": {
+          "title": "Services",
+          "desc": "Services numériques et briques mutualisées."
+        },
+        "standards": {
+          "title": "Standards techniques",
+          "desc": "Règles et référentiels techniques du numérique public."
+        }
+      },
+      "cta": "Voir les ressources techniques"
+    },
+    "documentation": {
+      "kicker": "Documentation",
+      "title": "La documentation",
+      "lead": "Une plateforme documentaire développeur : guides, références et documentation technique.",
+      "items": {
+        "guides": {
+          "title": "Guides",
+          "desc": "Construire un service numérique public, étape par étape."
+        },
+        "referencesApi": {
+          "title": "Références API",
+          "desc": "Les interfaces publiques documentées."
+        },
+        "technique": {
+          "title": "Documentation technique",
+          "desc": "Détails d'implémentation et références des composants."
+        },
+        "standards": {
+          "title": "Standards",
+          "desc": "Les référentiels du numérique public."
+        },
+        "projectsDoc": {
+          "title": "Documentation des projets",
+          "desc": "La documentation des projets publics référencés."
+        }
+      },
+      "cta": "Consulter la documentation"
+    },
+    "organizations": {
+      "kicker": "Organisations",
+      "title": "Organisations et communautés",
+      "lead": "Les organisations, équipes, développeurs et communautés qui construisent le numérique public.",
+      "items": {
+        "organisations": {
+          "title": "Organisations",
+          "desc": "Les organismes et administrations présents sur Code."
+        },
+        "equipes": {
+          "title": "Équipes",
+          "desc": "Les équipes produits et techniques."
+        },
+        "developpeurs": {
+          "title": "Développeurs",
+          "desc": "Les développeurs et développeuses de l'écosystème."
+        },
+        "communautes": {
+          "title": "Communautés",
+          "desc": "Les communautés autour des communs numériques."
+        },
+        "contributions": {
+          "title": "Contributions",
+          "desc": "Les apports de la communauté aux projets publics."
+        }
+      },
+      "cta": "Explorer les organisations"
+    },
+    "contribute": {
+      "kicker": "Contribuer",
+      "title": "Contribuer au numérique public",
+      "lead": "Plusieurs manières de contribuer, pour les développeurs et les contributeurs de l'écosystème.",
+      "items": {
+        "code": {
+          "title": "Le code",
+          "desc": "Proposer du code, corriger des bugs, améliorer les projets."
+        },
+        "issues": {
+          "title": "Les issues",
+          "desc": "Signaler des problèmes et décrire des besoins."
+        },
+        "pullRequests": {
+          "title": "Les pull requests",
+          "desc": "Proposer des évolutions revues par les équipes."
+        },
+        "documentation": {
+          "title": "La documentation",
+          "desc": "Écrire et améliorer les guides et références."
+        },
+        "standards": {
+          "title": "Les standards",
+          "desc": "Proposer et faire évoluer les référentiels publics."
+        },
+        "securite": {
+          "title": "La sécurité",
+          "desc": "Signaler des vulnérabilités de manière responsable."
+        },
+        "plateforme": {
+          "title": "La plateforme",
+          "desc": "Contribuer au développement de Code lui-même."
+        },
+        "ecosysteme": {
+          "title": "L'écosystème",
+          "desc": "Participer aux communautés et aux retours d'expérience."
+        }
+      },
+      "cta": "Contribuer"
+    },
+    "activity": {
+      "kicker": "Activité",
+      "title": "Actualités et activité",
+      "lead": "La vie de l'écosystème : releases, mises à jour et annonces techniques.",
+      "items": {
+        "releases": {
+          "title": "Releases",
+          "desc": "Les nouvelles versions des composants et de la plateforme."
+        },
+        "projets": {
+          "title": "Nouveaux projets",
+          "desc": "Les projets récemment référencés sur Code."
+        },
+        "misesAJour": {
+          "title": "Mises à jour",
+          "desc": "Les évolutions des standards et des ressources."
+        },
+        "annonces": {
+          "title": "Annonces techniques",
+          "desc": "Les communications techniques de l'écosystème."
+        },
+        "activite": {
+          "title": "Activité récente",
+          "desc": "L'activité des dépôts et des projets publics."
+        }
+      },
+      "cta": "Voir les dernières évolutions"
+    },
+    "finalCta": {
+      "title": "Construire le numérique public.",
+      "text": "Code est la plateforme développeur de l'administration d'Astoria : un point d'entrée commun vers les projets, organisations, documentations, standards, APIs, SDKs et ressources techniques du secteur public.",
+      "cta1": "Explorer Code",
+      "cta2": "Consulter la documentation",
+      "cta3": "Contribuer"
     }
   },
   "meta": {

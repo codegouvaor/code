@@ -1,17 +1,35 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Accordion } from "@codegouvaor/react-ads/Accordion";
+import { ADSSection, ADSContainer } from "@codegouvaor/react-ads/ads";
+import { ButtonsGroup } from "@codegouvaor/react-ads/ButtonsGroup";
+import { Card } from "@codegouvaor/react-ads/Card";
+import { Highlight } from "@codegouvaor/react-ads/Highlight";
+import { Notice } from "@codegouvaor/react-ads/Notice";
+import { TagsGroup } from "@codegouvaor/react-ads/TagsGroup";
+import { Tile } from "@codegouvaor/react-ads/Tile";
+import type { TagProps } from "@codegouvaor/react-ads/Tag";
+import type { ButtonProps } from "@codegouvaor/react-ads/Button";
 import { localizedAlternates, resolveLocaleParam } from "@/lib/localized-metadata";
-import { Link } from "@/i18n/navigation";
-import { lifecycleThemes } from "@/lib/site-structure";
 import {
-  homeContributions,
-  homeDoors,
-  homeFollowLinks,
-  homeFoundations,
-  homeResources,
+  homeActivityHref,
+  homeActivityExternal,
+  homeActivityItems,
+  homeContributeCtaHref,
+  homeContributeItems,
+  homeDocumentationCtaHref,
+  homeDocumentationItems,
+  homeEcosystemPlatforms,
+  homeExploreDoors,
+  homeFinalCtaLinks,
+  homeOrganizationItems,
+  homeOrganizationsCtaHref,
+  homeProjectsCtaHref,
+  homeProjectsModel,
+  homeResourcesCtaHref,
+  homeResourcesItems,
 } from "@/lib/home-content";
+import { portalPaths } from "@/lib/site-structure";
 
 const HOME_PATH = "/";
 
@@ -32,23 +50,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 /**
- * Homepage of the Pôle open-source et numérique commun — CODE.GOUV.AOR.
+ * Homepage of CODE — the public developer platform of Astoria's
+ * administration.
  *
- * Editorial content model of the reference open-source portal (code.gouv.fr),
- * adapted to the CODE ecosystem, organised in one mission hero followed by
- * seven sections:
+ * CODE is not a Git forge: it is a common entry point to the projects,
+ * organisations, documentation, standards, APIs, SDKs and technical resources
+ * of the public sector, while remaining interoperable with the development
+ * platforms it references (GitHub, GitLab, Giteria…). The conceptual model is
+ * `Code Project → Repository Binding → GitHub / GitLab / Giteria`: a project
+ * is independent from the forge that hosts its code.
  *
- *   01 — Héro mission (Construire le numérique public + illustration)
- *   02 — « Des standards pour et par les administrations » (3 portes)
- *   03 — Bande éditoriale « Le pôle open-source et numérique commun »
- *   04 — « Explorer la plateforme » (les 6 thèmes du cycle de vie)
- *   05 — Fondations & références
- *   06 — Ressources de l'écosystème
- *   07 — « Vos contributions sont les bienvenues ! » (accordéons)
- *   08 — Bande « Restez informé / réseaux »
+ * The page is organised in ten sections:
  *
- * Text lives in the message catalogs (`home.*`); this component only decides
- * the structure, the data (`home-content`) and the destinations.
+ *   01 — Hero           « Le numérique public, en code. »
+ *   02 — Explorer Code  the six main doorways of the platform
+ *   03 — Les projets    the public software projects (interoperable model)
+ *   04 — Écosystème     the integrated forges, an open ecosystem
+ *   05 — Développer     the technical resources to build public services
+ *   06 — Documentation  the developer documentation platform
+ *   07 — Organisations  the organisations, teams and communities
+ *   08 — Contribuer     the ways to contribute
+ *   09 — Activité       the recent life of the ecosystem
+ *   10 — CTA final      « Construire le numérique public. »
+ *
+ * The content is driven by the `home-content` data module (keys + hrefs) and
+ * the message catalogs (`home.*`); this component only decides the structure.
+ * No project, organisation, release or statistic is invented: sections whose
+ * content is not yet available use a static institutional presentation.
  */
 export default async function HomePage({ params }: PageProps) {
   const { locale: rawLocale } = await params;
@@ -56,239 +84,412 @@ export default async function HomePage({ params }: PageProps) {
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "home" });
-  const tPrimaryNav = await getTranslations({ locale, namespace: "nav.primary" });
-  const tNavPanel = await getTranslations({ locale, namespace: "nav.panel" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
 
-  /** Accent words of a heading — same weight, coloured like the reference. */
-  const accent = (chunks: ReactNode) => <span className="gov-code-accent">{chunks}</span>;
-  /** Action words of the mission lead — bold, like the reference chapeau. */
-  const strong = (chunks: ReactNode) => <strong>{chunks}</strong>;
+  /** Anchor button CTA used by several sections. */
+  const cta = (
+    buttons: ReadonlyArray<Pick<ButtonProps, "children" | "linkProps" | "priority" | "iconId" | "iconPosition">>
+  ): ReactNode => (
+    <div className="gov-code-section-cta">
+      <ButtonsGroup inlineLayoutWhen="sm and up" buttons={[...buttons] as [ButtonProps, ...ButtonProps[]]} />
+    </div>
+  );
 
   return (
     <>
-      {/* 01 — Héro mission: text (md-6) + illustration (md-4), like the
-          reference portal. Search lives in the header. */}
-      <section
-        className="gov-section gov-section--tinted gov-code-hero"
-        aria-labelledby="home-hero-title"
-      >
-        <div className="gov-section__container">
-          <div className="fr-grid-row fr-grid-row--center">
-            <div className="fr-col-10 fr-col-md-2 fr-col-lg-6 gov-code-hero__text">
-              <h1 id="home-hero-title" className="gov-code-hero__title">
-                {t("hero.title")}
-              </h1>
-              <p className="gov-lead gov-code-hero__lead">
-                {t.rich("hero.lead", { strong })}
-              </p>
+      {/* 01 — Hero: the front door of the platform. Two-column layout (text +
+          developer illustration), like the reference portal; the global search
+          lives in the header, so the hero stays a sober institutional
+          statement with the two main entry points. */}
+      <ADSSection tone="subtle">
+        <ADSContainer size="wide">
+          <div className="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div className="fr-col-12 fr-col-md-7">
+              <p className="gov-kicker">{t("hero.kicker")}</p>
+              <h1 id="home-hero-title">{t("hero.title")}</h1>
+              <p className="gov-lead">{t("hero.lead")}</p>
+              <div style={{ marginTop: "1.5rem" }}>
+                <ButtonsGroup
+                  alignment="left"
+                  inlineLayoutWhen="sm and up"
+                  buttons={[
+                    {
+                      children: t("hero.primaryCta"),
+                      linkProps: { href: homeProjectsCtaHref },
+                      priority: "primary",
+                      iconId: "fr-icon-arrow-right-line",
+                      iconPosition: "right",
+                    },
+                    {
+                      children: t("hero.secondaryCta"),
+                      linkProps: { href: portalPaths.documentation },
+                      priority: "secondary",
+                    },
+                  ]}
+                />
+              </div>
             </div>
-            <div className="fr-hidden fr-unhidden-md fr-col-md-4 gov-code-hero__visual">
-              {/* Decorative illustration of the mission band (same artwork
-                  as the reference portal), hidden below 48em. */}
-              <img src="/Programmer.png" alt="" />
+            <div className="fr-col-12 fr-col-md-5">
+              <img src="/Programmer.png" alt="" className="fr-responsive-img" />
             </div>
           </div>
-        </div>
-      </section>
+        </ADSContainer>
+      </ADSSection>
 
-      {/* 02 — Pour / Par / Avec les agents : the three doorways */}
-      <section className="gov-section" aria-labelledby="home-doors-title">
-        <div className="gov-section__container">
-          <h2 id="home-doors-title" className="gov-section__title">
-            {t.rich("doors.title", { accent })}
-          </h2>
-          <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
-            {homeDoors.map((door) => (
-              <li key={door.key} className="fr-col-12 fr-col-md-4">
-                <Link className="gov-code-card" href={door.href}>
-                  <h3>{t(`doors.items.${door.key}.title`)}</h3>
-                  <p>{t(`doors.items.${door.key}.desc`)}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 03 — Bande éditoriale : Le pôle open-source et numérique commun */}
-      <section
-        className="gov-section gov-section--subtle"
-        aria-labelledby="home-band-title"
-      >
-        <div className="gov-section__container">
-          <div className="gov-code-narrow">
-            <h2 id="home-band-title" className="gov-section__title">
-              {t("band.title")}
-            </h2>
-            <p className="gov-lead gov-code-band__text">{t("band.text")}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 04 — Explorer la plateforme : the six lifecycle themes */}
+      {/* 02 — Explorer Code: the six doorways of the platform. */}
       <section className="gov-section" aria-labelledby="home-explore-title">
         <div className="gov-section__container">
+          <p className="gov-kicker">{t("explore.kicker")}</p>
           <h2 id="home-explore-title" className="gov-section__title">
             {t("explore.title")}
           </h2>
           <p className="gov-lead">{t("explore.lead")}</p>
           <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
-            {lifecycleThemes.map((theme) => (
-              <li key={theme.labelKey} className="fr-col-12 fr-col-md-6 fr-col-lg-4">
-                <Link className="gov-code-lifecycle-link" href={theme.href}>
-                  <span>{tPrimaryNav(theme.labelKey)}</span>
-                  <span className="fr-icon-arrow-right-line" aria-hidden="true" />
-                </Link>
+            {homeExploreDoors.map((door) => (
+              <li key={door.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
+                <Tile
+                  title={t(`explore.items.${door.key}.title`)}
+                  desc={t(`explore.items.${door.key}.desc`)}
+                  titleAs="h3"
+                  linkProps={{ href: door.href }}
+                  pictogram={
+                    <span
+                      className={`gov-code-tile-pictogram ${door.iconId}`}
+                      aria-hidden="true"
+                    />
+                  }
+                />
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* 05 — Fondations : the cross-cutting references of CODE */}
-      <section
-        className="gov-section gov-section--subtle"
-        aria-labelledby="home-foundations-title"
-      >
+      {/* 03 — Les projets publics: at the centre of the platform. The model
+          (Projet → Liaison de dépôt → Forge) is explained statically while
+          no project is referenced yet; no project is invented. */}
+      <section className="gov-section gov-section--subtle" aria-labelledby="home-projects-title">
         <div className="gov-section__container">
-          <h2 id="home-foundations-title" className="gov-section__title">
-            {t.rich("foundations.title", { accent })}
+          <p className="gov-kicker">{t("projects.kicker")}</p>
+          <h2 id="home-projects-title" className="gov-section__title">
+            {t("projects.title")}
           </h2>
-          <p className="gov-lead">{t("foundations.lead")}</p>
+          <p className="gov-lead">{t("projects.lead")}</p>
+
+          <h3 className="gov-section__subtitle">{t("projects.modelTitle")}</h3>
+          <p className="gov-lead gov-code-model__text">{t("projects.modelText")}</p>
           <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
-            {homeFoundations.map((foundation) => (
-              <li key={foundation.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
-                <Link className="gov-code-card" href={foundation.href}>
-                  <h3>{tNavPanel(foundation.key)}</h3>
-                  <p>{t(`foundations.items.${foundation.key}`)}</p>
-                </Link>
+            {homeProjectsModel.map((item) => (
+              <li key={item.key} className="fr-col-12 fr-col-md-4">
+                <Card
+                  title={t(`projects.items.${item.key}.title`)}
+                  desc={t(`projects.items.${item.key}.desc`)}
+                  titleAs="h4"
+                  start={
+                    <span
+                      className={`gov-code-card__icon ${item.iconId}`}
+                      aria-hidden="true"
+                    />
+                  }
+                  shadow
+                />
               </li>
             ))}
           </ul>
+
+          <div className="gov-code-empty">
+            <Notice
+              title={t("projects.emptyTitle")}
+              description={t("projects.emptyText")}
+            />
+          </div>
+          {cta([
+            {
+              children: t("projects.cta"),
+              linkProps: { href: homeProjectsCtaHref },
+              priority: "primary",
+              iconId: "fr-icon-arrow-right-line",
+              iconPosition: "right",
+            },
+          ])}
         </div>
       </section>
 
-      {/* 06 — Ressources de l'écosystème */}
-      <section className="gov-section" aria-labelledby="home-resources-title">
+      {/* 04 — Un écosystème ouvert: CODE references the existing forges, it
+          does not replace them. */}
+      <section className="gov-section" aria-labelledby="home-ecosystem-title">
+        <div className="gov-section__container gov-code-ecosystem">
+          <p className="gov-kicker">{t("ecosystem.kicker")}</p>
+          <h2 id="home-ecosystem-title" className="gov-section__title">
+            {t("ecosystem.title")}
+          </h2>
+          <p className="gov-lead">{t("ecosystem.lead")}</p>
+          <Highlight>{t("ecosystem.text")}</Highlight>
+          <div className="gov-code-ecosystem__platforms">
+            <h3 className="gov-section__subtitle">{t("ecosystem.platformsTitle")}</h3>
+            <TagsGroup
+              tags={homeEcosystemPlatforms.map(
+                (platform): TagProps => {
+                  if (platform.href && platform.external) {
+                    return {
+                      children: t(`ecosystem.platforms.${platform.key}`),
+                      as: "a",
+                      linkProps: {
+                        href: platform.href,
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        title: tCommon("openNewWindow"),
+                      },
+                      iconId: "fr-icon-external-link-line",
+                    };
+                  }
+                  return {
+                    children: t(`ecosystem.platforms.${platform.key}`),
+                    as: "span",
+                  };
+                }
+              ) as [TagProps, ...TagProps[]]}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 05 — Développer les services publics: the technical building blocks. */}
+      <section className="gov-section gov-section--subtle" aria-labelledby="home-resources-title">
         <div className="gov-section__container">
+          <p className="gov-kicker">{t("resources.kicker")}</p>
           <h2 id="home-resources-title" className="gov-section__title">
             {t("resources.title")}
           </h2>
           <p className="gov-lead">{t("resources.lead")}</p>
           <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
-            {homeResources.map((resource) => {
-              const common = (
-                <>
-                  <h3>{tNavPanel(resource.labelKey)}</h3>
-                  <p>{t(`resources.items.${resource.key}`)}</p>
-                  <span className="gov-code-card__action">
-                    {t("resources.discover")}
+            {homeResourcesItems.map((item) => (
+              <li key={item.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
+                <Card
+                  title={t(`resources.items.${item.key}.title`)}
+                  desc={t(`resources.items.${item.key}.desc`)}
+                  titleAs="h3"
+                  enlargeLink
+                  linkProps={{ href: item.href }}
+                  start={
                     <span
-                      className={
-                        resource.external
-                          ? "fr-icon-external-link-line"
-                          : "fr-icon-arrow-right-line"
-                      }
+                      className={`gov-code-card__icon ${item.iconId}`}
                       aria-hidden="true"
                     />
-                  </span>
-                </>
-              );
-
-              return (
-                <li key={resource.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
-                  {resource.external ? (
-                    <Link
-                      className="gov-code-card"
-                      href={resource.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {common}
-                    </Link>
-                  ) : (
-                    <Link className="gov-code-card" href={resource.href}>
-                      {common}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
+                  }
+                  shadow
+                />
+              </li>
+            ))}
           </ul>
+          {cta([
+            {
+              children: t("resources.cta"),
+              linkProps: { href: homeResourcesCtaHref },
+              priority: "secondary",
+              iconId: "fr-icon-arrow-right-line",
+              iconPosition: "right",
+            },
+          ])}
         </div>
       </section>
 
-      {/* 07 — Vos contributions sont les bienvenues ! */}
-      <section
-        className="gov-section gov-section--subtle"
-        aria-labelledby="home-contributions-title"
-      >
+      {/* 06 — La documentation: a developer documentation platform. */}
+      <section className="gov-section" aria-labelledby="home-documentation-title">
         <div className="gov-section__container">
-          <div className="gov-code-narrow">
-            <h2 id="home-contributions-title" className="gov-section__title">
-              {t("contributions.title")}
-            </h2>
-            <div className="fr-accordions-group gov-code-accordions">
-              {homeContributions.map((item) => (
-                <Accordion
-                  key={item.key}
+          <p className="gov-kicker">{t("documentation.kicker")}</p>
+          <h2 id="home-documentation-title" className="gov-section__title">
+            {t("documentation.title")}
+          </h2>
+          <p className="gov-lead">{t("documentation.lead")}</p>
+          <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
+            {homeDocumentationItems.map((item) => (
+              <li key={item.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
+                <Card
+                  title={t(`documentation.items.${item.key}.title`)}
+                  desc={t(`documentation.items.${item.key}.desc`)}
                   titleAs="h3"
-                  label={t(`contributions.items.${item.key}.question`)}
-                >
-                  <p className="gov-code-accordions__answer">
-                    {t.rich(`contributions.items.${item.key}.answer`, {
-                      link: (chunks) => <Link href={item.href}>{chunks}</Link>,
-                    })}
-                  </p>
-                </Accordion>
-              ))}
-            </div>
-          </div>
+                  enlargeLink
+                  linkProps={{ href: item.href }}
+                  start={
+                    <span
+                      className={`gov-code-card__icon ${item.iconId}`}
+                      aria-hidden="true"
+                    />
+                  }
+                  shadow
+                />
+              </li>
+            ))}
+          </ul>
+          {cta([
+            {
+              children: t("documentation.cta"),
+              linkProps: { href: homeDocumentationCtaHref },
+              priority: "secondary",
+              iconId: "fr-icon-arrow-right-line",
+              iconPosition: "right",
+            },
+          ])}
         </div>
       </section>
 
-      {/* 08 — Bande follow : restez informé + réseaux */}
-      <section
-        className="gov-section gov-section--tinted gov-code-follow"
-        aria-labelledby="home-follow-title"
-      >
+      {/* 07 — Organisations et communautés. */}
+      <section className="gov-section gov-section--subtle" aria-labelledby="home-organizations-title">
         <div className="gov-section__container">
-          <div className="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-            <div className="fr-col-12 fr-col-md-7">
-              <h2 id="home-follow-title" className="gov-code-follow__title">
-                {t("follow.newsletterTitle")}
-              </h2>
-              <p className="gov-code-follow__text">{t("follow.newsletterText")}</p>
-              {/* DSFR appends the external-link icon automatically on
-                  target="_blank" links — no manual icon, no duplicate. */}
-              <Link
-                className="fr-btn"
-                href={homeFollowLinks.releasesUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={tCommon("openNewWindow")}
-              >
-                {t("follow.newsletterCta")}
-              </Link>
-            </div>
-            <div className="fr-col-12 fr-col-md-5">
-              <p className="gov-code-follow__social-title">{t("follow.socialTitle")}</p>
-              <ul className="gov-code-follow__social">
-                <li>
-                  <Link
-                    className="gov-code-follow__social-link"
-                    href={homeFollowLinks.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={tCommon("openNewWindow")}
-                  >
-                    {tNavPanel("github")}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <p className="gov-kicker">{t("organizations.kicker")}</p>
+          <h2 id="home-organizations-title" className="gov-section__title">
+            {t("organizations.title")}
+          </h2>
+          <p className="gov-lead">{t("organizations.lead")}</p>
+          <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
+            {homeOrganizationItems.map((item) => (
+              <li key={item.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
+                <Card
+                  title={t(`organizations.items.${item.key}.title`)}
+                  desc={t(`organizations.items.${item.key}.desc`)}
+                  titleAs="h3"
+                  start={
+                    <span
+                      className={`gov-code-card__icon ${item.iconId}`}
+                      aria-hidden="true"
+                    />
+                  }
+                  shadow
+                />
+              </li>
+            ))}
+          </ul>
+          {cta([
+            {
+              children: t("organizations.cta"),
+              linkProps: { href: homeOrganizationsCtaHref },
+              priority: "secondary",
+              iconId: "fr-icon-arrow-right-line",
+              iconPosition: "right",
+            },
+          ])}
+        </div>
+      </section>
+
+      {/* 08 — Contribuer: the many ways to contribute, developer-oriented. */}
+      <section className="gov-section" aria-labelledby="home-contribute-title">
+        <div className="gov-section__container">
+          <p className="gov-kicker">{t("contribute.kicker")}</p>
+          <h2 id="home-contribute-title" className="gov-section__title">
+            {t("contribute.title")}
+          </h2>
+          <p className="gov-lead">{t("contribute.lead")}</p>
+          <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
+            {homeContributeItems.map((item) => (
+              <li key={item.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-3">
+                <Tile
+                  title={t(`contribute.items.${item.key}.title`)}
+                  desc={t(`contribute.items.${item.key}.desc`)}
+                  titleAs="h3"
+                  pictogram={
+                    <span
+                      className={`gov-code-tile-pictogram ${item.iconId}`}
+                      aria-hidden="true"
+                    />
+                  }
+                  noBorder
+                />
+              </li>
+            ))}
+          </ul>
+          {cta([
+            {
+              children: t("contribute.cta"),
+              linkProps: { href: homeContributeCtaHref },
+              priority: "primary",
+              iconId: "fr-icon-arrow-right-line",
+              iconPosition: "right",
+            },
+          ])}
+        </div>
+      </section>
+
+      {/* 09 — Actualités et activité: the life of the ecosystem. No event is
+          invented — the news channel of the platform is the public repository
+          releases feed while no editorial flow exists yet. */}
+      <section className="gov-section gov-section--subtle" aria-labelledby="home-activity-title">
+        <div className="gov-section__container">
+          <p className="gov-kicker">{t("activity.kicker")}</p>
+          <h2 id="home-activity-title" className="gov-section__title">
+            {t("activity.title")}
+          </h2>
+          <p className="gov-lead">{t("activity.lead")}</p>
+          <ul className="fr-grid-row fr-grid-row--gutters gov-code-gridlist">
+            {homeActivityItems.map((item) => (
+              <li key={item.key} className="fr-col-12 fr-col-sm-6 fr-col-lg-4">
+                <Card
+                  title={t(`activity.items.${item.key}.title`)}
+                  desc={t(`activity.items.${item.key}.desc`)}
+                  titleAs="h3"
+                  start={
+                    <span
+                      className={`gov-code-card__icon ${item.iconId}`}
+                      aria-hidden="true"
+                    />
+                  }
+                  shadow
+                />
+              </li>
+            ))}
+          </ul>
+          {cta([
+            {
+              children: t("activity.cta"),
+              linkProps: homeActivityExternal
+                ? {
+                    href: homeActivityHref,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    title: tCommon("openNewWindow"),
+                  }
+                : { href: homeActivityHref },
+              priority: "secondary",
+              iconId: "fr-icon-external-link-line",
+              iconPosition: "right",
+            },
+          ])}
+        </div>
+      </section>
+
+      {/* 10 — CTA final: the natural transition to the institutional footer. */}
+      <section
+        className="gov-section gov-section--tinted gov-code-final"
+        aria-labelledby="home-final-title"
+      >
+        <div className="gov-section__container gov-code-final__inner">
+          <h2 id="home-final-title" className="gov-section__title">
+            {t("finalCta.title")}
+          </h2>
+          <p className="gov-code-final__text">{t("finalCta.text")}</p>
+          <ButtonsGroup
+            alignment="center"
+            inlineLayoutWhen="sm and up"
+            buttons={[
+              {
+                children: t("finalCta.cta1"),
+                linkProps: { href: homeFinalCtaLinks[0].href },
+                priority: "primary",
+                iconId: "fr-icon-arrow-right-line",
+                iconPosition: "right",
+              },
+              {
+                children: t("finalCta.cta2"),
+                linkProps: { href: homeFinalCtaLinks[1].href },
+                priority: "secondary",
+              },
+              {
+                children: t("finalCta.cta3"),
+                linkProps: { href: homeFinalCtaLinks[2].href },
+                priority: "secondary",
+              },
+            ]}
+          />
         </div>
       </section>
     </>

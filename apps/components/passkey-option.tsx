@@ -19,7 +19,7 @@ export function CreateAccountLink() {
   return (
     <div className="w-full rounded-md border border-border p-4 text-center text-sm">
       <span className="text-foreground">New to Giteria? </span>
-      <Link href="/register" className="text-[#2f81f7] hover:underline">
+      <Link href="/login?tab=register" className="text-[#2f81f7] hover:underline">
         Create an account
       </Link>
       .

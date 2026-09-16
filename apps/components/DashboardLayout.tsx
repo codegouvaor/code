@@ -35,7 +35,7 @@ export function useOwnerHeader() {
   return useContext(OwnerHeaderContext);
 }
 
-const publicRoutes = ["/login", "/register", "/forgot", "/oauth"];
+const publicRoutes = ["/login", "/forgot", "/oauth"];
 
 const shouldShowSidebar = (pathname: string): boolean => {
   if (publicRoutes.some((route) => pathname.startsWith(route))) {

@@ -16,7 +16,7 @@ export const NAVIGATION_CONFIG = {
   /**
    * Page de registration
    */
-  REGISTER_PAGE: "/register",
+  REGISTER_PAGE: "/login",
   
   /**
    * Page de forgot password

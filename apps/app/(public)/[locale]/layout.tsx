@@ -7,13 +7,10 @@ import { AdsProvider } from "@/components/public/ads/ads-provider";
 import { GovernmentHeader } from "@/components/public/header/government-header";
 import { GovernmentFooter } from "@/components/public/footer/government-footer";
 import { BackToTopButton } from "@/components/common/back-to-top-button";
+import { PopUp } from "@/components/common/pop-up";
 
-// Astoria Design System stylesheet (icons + components). Imported here so the
-// CSS is only shipped to the localized public routes.
 import "@codegouvaor/react-ads/main.css";
-// Portal layer (Astorian identity lockup, page chrome, content typography).
-import "@/styles/globals.css";
-
+  
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://code.gouv.aor";
 
 export function generateStaticParams() {
@@ -45,9 +42,9 @@ export async function generateMetadata({
           url: "/astoria-gouv.png",
           type: "image/svg+xml",
         },
-        { url: "/icon-light-32x32.png" },
+        { url: "/astoria-gouv.png" },
       ],
-      apple: "/apple-icon.png",
+      apple: "/astoria-gouv.png",
     },
   };
 }
@@ -71,8 +68,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className="select-none">
-      <body className="gov-ads">
+    <html lang={locale} suppressHydrationWarning>
+      <body className="select-none">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AdsProvider lang={locale}>
             <div className="gov-page">
@@ -82,6 +79,7 @@ export default async function LocaleLayout({
               </main>
               <GovernmentFooter />
               <BackToTopButton />
+              <PopUp />
             </div>
           </AdsProvider>
         </NextIntlClientProvider>

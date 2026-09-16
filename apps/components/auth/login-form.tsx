@@ -7,6 +7,12 @@ import { Button } from "@codegouvaor/react-ads/Button";
 import { Checkbox } from "@codegouvaor/react-ads/Checkbox";
 import { useAuth } from "@/context/AuthContext";
 
+const formStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
+};
+
 export default function LoginForm() {
   const { login, isLoading } = useAuth();
 
@@ -49,12 +55,25 @@ export default function LoginForm() {
   }
 
   return (
-    <form className="gov-login-form" onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate style={formStyle}>
       {/* Error alert */}
       {error && (
-        <div className="gov-login-form__alert" role="alert">
+        <div
+          role="alert"
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "0.5rem",
+            padding: "0.75rem 1rem",
+            border: "1px solid var(--ads-color-danger)",
+            background: "var(--ads-color-surface-muted)",
+            color: "var(--ads-color-danger)",
+            fontSize: "0.9375rem",
+            lineHeight: 1.5,
+          }}
+        >
           <span className="fr-icon-error-line" aria-hidden="true" />
-          <p className="gov-login-form__alert-text">{error}</p>
+          <span>{error}</span>
         </div>
       )}
 
@@ -94,7 +113,7 @@ export default function LoginForm() {
       />
 
       {/* Remember me + forgot password */}
-      <div className="gov-login-form__options">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
         <Checkbox
           type="checkbox"
           legend={<span className="sr-only">Options</span>}
@@ -110,42 +129,25 @@ export default function LoginForm() {
             },
           ]}
         />
-
-        <a href="/forgot-password" className="gov-login-form__forgot-link">
+        <a
+          href="/forgot-password"
+          style={{ fontWeight: 600, color: "var(--ads-color-primary)", textUnderlineOffset: "0.2em" }}
+        >
           Forgot your password?
         </a>
       </div>
 
       {/* Submit */}
-      <div className="gov-login-form__submit">
-        <Button
-          type="submit"
-          priority="primary"
-          size="large"
-          disabled={isSubmitting || isLoading}
-          iconId={
-            isSubmitting ? "fr-icon-refresh-line" : "fr-icon-lock-line"
-          }
-          iconPosition="left"
-        >
-          {isSubmitting ? "Signing in…" : "Sign in"}
-        </Button>
-      </div>
-
-      {/* Divider */}
-      <div className="gov-login-form__divider">
-        <span className="gov-login-form__divider-text">or</span>
-      </div>
-
-      {/* Register link */}
-      <div className="gov-login-form__register">
-        <p className="gov-login-form__register-text">
-          Don&apos;t have an account?{" "}
-          <a href="/register" className="gov-login-form__register-link">
-            Create one
-          </a>
-        </p>
-      </div>
+      <Button
+        type="submit"
+        priority="primary"
+        size="large"
+        disabled={isSubmitting || isLoading}
+        iconId={isSubmitting ? "fr-icon-refresh-line" : "fr-icon-lock-line"}
+        iconPosition="left"
+      >
+        {isSubmitting ? "Signing in…" : "Sign in"}
+      </Button>
     </form>
   );
 }
