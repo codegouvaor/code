@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"crypto/sha256"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"net/http"
@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/interfaces"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/services"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func (h *apiHandler) register(c *gin.Context) {
@@ -478,7 +478,7 @@ func (h *apiHandler) ensureFirstUserIsAdmin(c *gin.Context) {
 		utils.Error(c, utils.ErrUnauthorized)
 		return
 	}
-	
+
 	p := principal.(interfaces.Principal)
 	isAdmin := false
 	for _, role := range p.Roles {
@@ -487,17 +487,17 @@ func (h *apiHandler) ensureFirstUserIsAdmin(c *gin.Context) {
 			break
 		}
 	}
-	
+
 	if !isAdmin {
 		utils.Error(c, utils.ErrForbidden)
 		return
 	}
-	
+
 	if err := h.deps.AuthService.EnsureFirstUserHasAdminRoles(c.Request.Context()); err != nil {
 		utils.Error(c, err)
 		return
 	}
-	
+
 	utils.Success(c, http.StatusOK, gin.H{"message": "First user has been ensured admin roles"})
 }
 
@@ -512,7 +512,7 @@ func (h *apiHandler) getFirstUserInfo(c *gin.Context) {
 		utils.Error(c, utils.NewError(http.StatusNotFound, "NOT_FOUND", "No users found", nil))
 		return
 	}
-	
+
 	userRoles, _ := h.deps.Repos.UserRoles().ListByUser(c.Request.Context(), firstUser.ID)
 	var roles []string
 	for _, ur := range userRoles {
@@ -543,14 +543,14 @@ func (h *apiHandler) ensureUserIsOwner(c *gin.Context) {
 		utils.Error(c, utils.ErrValidationFailed)
 		return
 	}
-	
+
 	// Vérifier que l'utilisateur actuel est admin
 	principal, exists := c.Get("principal")
 	if !exists {
 		utils.Error(c, utils.ErrUnauthorized)
 		return
 	}
-	
+
 	p := principal.(interfaces.Principal)
 	isAdmin := false
 	for _, role := range p.Roles {
@@ -559,12 +559,12 @@ func (h *apiHandler) ensureUserIsOwner(c *gin.Context) {
 			break
 		}
 	}
-	
+
 	if !isAdmin {
 		utils.Error(c, utils.ErrForbidden)
 		return
 	}
-	
+
 	// Trouver l'utilisateur par email
 	var user models.User
 	if err := h.deps.Database.Gorm().
@@ -574,7 +574,7 @@ func (h *apiHandler) ensureUserIsOwner(c *gin.Context) {
 		utils.Error(c, utils.NewError(http.StatusNotFound, "NOT_FOUND", "User not found", nil))
 		return
 	}
-	
+
 	// Mettre à jour les rôles via UserRoles repository
 	adminSlugs := []string{"superadmin", "admin", "owner"}
 	for _, slug := range adminSlugs {

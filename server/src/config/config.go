@@ -19,6 +19,7 @@ type Config struct {
 	Auth        AuthConfig
 	OAuth       OAuthConfig
 	CORS        CORSConfig
+	Providers   ProvidersConfig
 	Anilist     AnilistConfig
 	MyAnimeList MyAnimeListConfig
 	MediaSource MediaSourceConfig
@@ -28,15 +29,44 @@ type OAuthProviderConfig struct {
 	ClientID     string
 	ClientSecret string
 	RedirectURL  string
-	Enabled      bool
+	// BaseURL points the provider endpoints at a self-hosted instance
+	// (GitLab, Giteria). Empty falls back to the public instance.
+	BaseURL string
+	Enabled bool
 }
 
 type OAuthConfig struct {
-	Google  OAuthProviderConfig
-	GitHub  OAuthProviderConfig
-	Discord OAuthProviderConfig
-	Apple   OAuthProviderConfig
+	Google   OAuthProviderConfig
+	GitHub   OAuthProviderConfig
+	GitLab   OAuthProviderConfig
+	Giteria  OAuthProviderConfig
+	Discord  OAuthProviderConfig
+	Apple    OAuthProviderConfig
 	StateTTL time.Duration
+}
+
+// ProviderEndpointConfig configures one forge the platform integrates with.
+// BaseURL allows self-hosted instances (GitLab, Giteria) while Token enables a
+// platform-wide service credential for public projects.
+type ProviderEndpointConfig struct {
+	Enabled bool
+	BaseURL string
+	Token   string
+}
+
+// ProvidersConfig configures the provider layer: where the forges live, which
+// service credentials are available, how provider reads are cached and how
+// connection tokens are encrypted at rest.
+type ProvidersConfig struct {
+	// EncryptionKey protects provider credentials (never stored in clear
+	// text). It falls back to the account JWT secret when unset so that the
+	// platform works out of the box in development.
+	EncryptionKey string
+	Timeout       time.Duration
+	CacheTTL      time.Duration
+	GitHub        ProviderEndpointConfig
+	GitLab        ProviderEndpointConfig
+	Giteria       ProviderEndpointConfig
 }
 
 type AppConfig struct {
@@ -117,10 +147,10 @@ type AnilistConfig struct {
 // endpoints. It can be overridden at runtime by saving settings through the UI
 // (persisted in source_configs).
 type MyAnimeListConfig struct {
-	Enabled       bool
-	ClientID      string
-	BaseURL       string
-	SyncInterval  time.Duration
+	Enabled      bool
+	ClientID     string
+	BaseURL      string
+	SyncInterval time.Duration
 }
 
 // MediaSourceConfig separates the two provider roles:
@@ -232,6 +262,26 @@ func Load() (Config, error) {
 			TOTPIssuer:             getEnv("AUTH_MFA_TOTP_ISSUER", "Etheria Times"),
 			MFARecoveryCodeLength:  getEnvInt("AUTH_MFA_RECOVERY_CODE_LENGTH", 8),
 		},
+		Providers: ProvidersConfig{
+			EncryptionKey: getEnv("PROVIDERS_ENCRYPTION_KEY", ""),
+			Timeout:       getEnvDuration("PROVIDERS_TIMEOUT", 15*time.Second),
+			CacheTTL:      getEnvDuration("PROVIDERS_CACHE_TTL", 2*time.Minute),
+			GitHub: ProviderEndpointConfig{
+				Enabled: getEnvBool("PROVIDERS_GITHUB_ENABLED", true),
+				BaseURL: getEnv("PROVIDERS_GITHUB_BASE_URL", ""),
+				Token:   getEnv("PROVIDERS_GITHUB_TOKEN", ""),
+			},
+			GitLab: ProviderEndpointConfig{
+				Enabled: getEnvBool("PROVIDERS_GITLAB_ENABLED", true),
+				BaseURL: getEnv("PROVIDERS_GITLAB_BASE_URL", ""),
+				Token:   getEnv("PROVIDERS_GITLAB_TOKEN", ""),
+			},
+			Giteria: ProviderEndpointConfig{
+				Enabled: getEnvBool("PROVIDERS_GITERIA_ENABLED", true),
+				BaseURL: getEnv("PROVIDERS_GITERIA_BASE_URL", ""),
+				Token:   getEnv("PROVIDERS_GITERIA_TOKEN", ""),
+			},
+		},
 		OAuth: OAuthConfig{
 			Google: OAuthProviderConfig{
 				ClientID:     getEnv("OAUTH_GOOGLE_CLIENT_ID", ""),
@@ -244,6 +294,20 @@ func Load() (Config, error) {
 				ClientSecret: getEnv("OAUTH_GITHUB_CLIENT_SECRET", ""),
 				RedirectURL:  getEnv("OAUTH_GITHUB_REDIRECT_URL", ""),
 				Enabled:      getEnv("OAUTH_GITHUB_CLIENT_ID", "") != "",
+			},
+			GitLab: OAuthProviderConfig{
+				ClientID:     getEnv("OAUTH_GITLAB_CLIENT_ID", ""),
+				ClientSecret: getEnv("OAUTH_GITLAB_CLIENT_SECRET", ""),
+				RedirectURL:  getEnv("OAUTH_GITLAB_REDIRECT_URL", ""),
+				BaseURL:      getEnv("OAUTH_GITLAB_BASE_URL", ""),
+				Enabled:      getEnv("OAUTH_GITLAB_CLIENT_ID", "") != "",
+			},
+			Giteria: OAuthProviderConfig{
+				ClientID:     getEnv("OAUTH_GITERIA_CLIENT_ID", ""),
+				ClientSecret: getEnv("OAUTH_GITERIA_CLIENT_SECRET", ""),
+				RedirectURL:  getEnv("OAUTH_GITERIA_REDIRECT_URL", ""),
+				BaseURL:      getEnv("OAUTH_GITERIA_BASE_URL", ""),
+				Enabled:      getEnv("OAUTH_GITERIA_CLIENT_ID", "") != "",
 			},
 			Discord: OAuthProviderConfig{
 				ClientID:     getEnv("OAUTH_DISCORD_CLIENT_ID", ""),
@@ -276,15 +340,15 @@ func Load() (Config, error) {
 			Enabled: getEnvBool("MEDIA_SOURCE_ENABLED", false),
 			Type:    getEnv("MEDIA_SOURCE_TYPE", "local"),
 			Jellyfin: JellyfinConfig{
-				URL:              getEnv("MEDIA_SOURCE_JELLYFIN_URL", "http://media-server:8096"),
-				APIKey:           getEnv("MEDIA_SOURCE_JELLYFIN_API_KEY", "795337733c3d47778b206b7f469b1467"),
-				UserID:           getEnv("MEDIA_SOURCE_JELLYFIN_USER_ID", "c8aa35777aae4664a0d4904d814a0e78"),
-				SyncInterval:     getEnvDuration("MEDIA_SOURCE_SYNC_INTERVAL", time.Hour),
-				StreamProfile:    getEnv("MEDIA_SOURCE_STREAM_PROFILE", "native"),
-				CacheTTL:         getEnvDuration("MEDIA_SOURCE_CACHE_TTL", 5*time.Minute),
-				StrmDir:          getEnv("MEDIA_SOURCE_JELLYFIN_STRM_DIR", "/remote-media"),
-				StrmLibraryName:  getEnv("MEDIA_SOURCE_JELLYFIN_STRM_LIBRARY", "Remote"),
-				StrmLibraryPath:  getEnv("MEDIA_SOURCE_JELLYFIN_STRM_LIBRARY_PATH", "/remote-media"),
+				URL:             getEnv("MEDIA_SOURCE_JELLYFIN_URL", "http://media-server:8096"),
+				APIKey:          getEnv("MEDIA_SOURCE_JELLYFIN_API_KEY", "795337733c3d47778b206b7f469b1467"),
+				UserID:          getEnv("MEDIA_SOURCE_JELLYFIN_USER_ID", "c8aa35777aae4664a0d4904d814a0e78"),
+				SyncInterval:    getEnvDuration("MEDIA_SOURCE_SYNC_INTERVAL", time.Hour),
+				StreamProfile:   getEnv("MEDIA_SOURCE_STREAM_PROFILE", "native"),
+				CacheTTL:        getEnvDuration("MEDIA_SOURCE_CACHE_TTL", 5*time.Minute),
+				StrmDir:         getEnv("MEDIA_SOURCE_JELLYFIN_STRM_DIR", "/remote-media"),
+				StrmLibraryName: getEnv("MEDIA_SOURCE_JELLYFIN_STRM_LIBRARY", "Remote"),
+				StrmLibraryPath: getEnv("MEDIA_SOURCE_JELLYFIN_STRM_LIBRARY_PATH", "/remote-media"),
 			},
 			Plex: PlexConfig{
 				URL:              getEnv("MEDIA_SOURCE_PLEX_URL", ""),
@@ -303,6 +367,18 @@ func Load() (Config, error) {
 
 	if cfg.Auth.JWTSecret == "" && cfg.App.Env != "production" {
 		cfg.Auth.JWTSecret = devJWTSecret
+	}
+
+	// Provider credentials fall back to the account secret so that the
+	// platform is usable without extra configuration in development.
+	if cfg.Providers.EncryptionKey == "" {
+		cfg.Providers.EncryptionKey = cfg.Auth.JWTSecret
+	}
+	if cfg.Providers.Timeout <= 0 {
+		cfg.Providers.Timeout = 15 * time.Second
+	}
+	if cfg.Providers.CacheTTL <= 0 {
+		cfg.Providers.CacheTTL = 2 * time.Minute
 	}
 
 	if cfg.Database.URL == "" {

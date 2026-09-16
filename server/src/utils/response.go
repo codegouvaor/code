@@ -25,6 +25,16 @@ func Success(c *gin.Context, status int, data any) {
 	})
 }
 
+// SuccessWithMeta is Success with extra envelope metadata (provider, source,
+// capabilities, …) so that clients keep a single response contract.
+func SuccessWithMeta(c *gin.Context, status int, data any, meta gin.H) {
+	if meta == nil {
+		meta = gin.H{}
+	}
+	meta["requestId"] = RequestIDFromGin(c)
+	c.JSON(status, gin.H{"data": data, "meta": meta})
+}
+
 func List(c *gin.Context, data any, nextCursor string, hasMore bool) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": data,

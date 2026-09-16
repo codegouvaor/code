@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pquerna/otp/totp"
 	"github.com/codegouvaor/code/server/src/config"
 	"github.com/codegouvaor/code/server/src/interfaces"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/pquerna/otp/totp"
 )
 
 type MfaService struct {

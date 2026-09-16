@@ -2,18 +2,17 @@ package routes
 
 import (
 	"context"
-	"io"
 	"log/slog"
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	redisclient "github.com/codegouvaor/code/server/internal/redis"
 	"github.com/codegouvaor/code/server/src/config"
 	"github.com/codegouvaor/code/server/src/interfaces"
 	"github.com/codegouvaor/code/server/src/middleware"
 	"github.com/codegouvaor/code/server/src/services"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 type Dependencies struct {
@@ -30,6 +29,16 @@ type Dependencies struct {
 	WorkspaceService *services.WorkspaceService
 	Repos            *services.Repositories
 	MfaService       *services.MfaService
+
+	// Platform layer (Code-native projects, providers and synchronisation).
+	OwnerService        *services.OwnerService
+	OrganizationService *services.OrganizationService
+	ProjectService      *services.ProjectService
+	RepositoryService   *services.RepositoryService
+	ConnectionService   *services.ProviderConnectionService
+	SyncService         *services.SyncService
+	JobService          *services.JobService
+	SearchService       *services.SearchService
 }
 
 func SetupRoutes(router *gin.Engine, deps Dependencies) {
@@ -42,7 +51,45 @@ func SetupRoutes(router *gin.Engine, deps Dependencies) {
 	api := router.Group("/api/v1")
 	api.GET("/health", handler.health)
 	api.GET("/ready", handler.ready)
-	api.POST("/integrations/webhooks/:provider/:integrationId", handler.webhook)
+
+	// Public platform reads: profiles, providers, repository content and
+	// search must stay reachable without a session for public resources.
+	api.GET("/providers", handler.listProviders)
+	api.GET("/search", handler.search)
+	api.GET("/owners/:owner", handler.getOwner)
+	api.GET("/owners/:owner/repositories", handler.getOwnerRepositories)
+	api.GET("/owners/:owner/projects", handler.getOwnerProjects)
+	api.GET("/owners/available", handler.checkOwnerName)
+	api.GET("/projects", handler.listProjects)
+	api.GET("/projects/:projectId", handler.getProject)
+	api.GET("/projects/:projectId/capabilities", handler.getProjectCapabilities)
+	api.GET("/projects/:projectId/members", handler.listProjectMembers)
+	api.GET("/projects/:projectId/assets", handler.listProjectAssets)
+	api.GET("/projects/:projectId/repositories", handler.listProjectRepositories)
+	api.GET("/projects/:projectId/repository", handler.getProjectRepository)
+	api.GET("/projects/:projectId/repository/tree", handler.listProjectRepositoryTree)
+	api.GET("/projects/:projectId/repository/blob", handler.getProjectRepositoryBlob)
+	api.GET("/projects/:projectId/repository/branches", handler.listProjectRepositoryBranches)
+	api.GET("/projects/:projectId/repository/commits", handler.listProjectRepositoryCommits)
+	api.GET("/projects/:projectId/repository/issues", handler.listProjectRepositoryIssues)
+	api.GET("/projects/:projectId/repository/reviews", handler.listProjectRepositoryReviews)
+	api.GET("/projects/:projectId/repository/releases", handler.listProjectRepositoryReleases)
+	api.GET("/organizations/:organization", handler.getOrganization)
+	api.GET("/organizations/:organization/members", handler.listOrganizationMembers)
+	api.GET("/organizations/:organization/teams", handler.listOrganizationTeams)
+	api.GET("/repositories/:owner/:repo", handler.getRepository)
+	api.GET("/repositories/:owner/:repo/branches", handler.listRepositoryBranches)
+	api.GET("/repositories/:owner/:repo/commits", handler.listRepositoryCommits)
+	api.GET("/repositories/:owner/:repo/tree", handler.getRepositoryTree)
+	api.GET("/repositories/:owner/:repo/blob", handler.getRepositoryBlob)
+	api.GET("/repositories/:owner/:repo/issues", handler.listRepositoryIssues)
+	api.GET("/repositories/:owner/:repo/reviews", handler.listRepositoryReviews)
+	api.GET("/repositories/:owner/:repo/releases", handler.listRepositoryReleases)
+	api.GET("/repositories/:owner/:repo/languages", handler.getRepositoryLanguages)
+	api.GET("/repositories/:owner/:repo/contributions", handler.getRepositoryContributions)
+
+	// Provider webhooks are authenticated by signature, not by session.
+	api.POST("/integrations/webhooks/:provider/:bindingId", handler.providerWebhook)
 
 	auth := api.Group("/auth")
 	{
@@ -89,6 +136,47 @@ func SetupRoutes(router *gin.Engine, deps Dependencies) {
 	{
 		protected.GET("/me", handler.me)
 		protected.PATCH("/me", handler.updateMe)
+
+		// Platform identity and personal namespace
+		protected.GET("/me/profile", handler.getViewerProfile)
+		protected.PUT("/me/username", handler.claimUsername)
+		protected.GET("/me/stars", handler.listStarredProjects)
+
+		// Projects
+		protected.POST("/projects", handler.createProject)
+		protected.PATCH("/projects/:projectId", handler.updateProject)
+		protected.DELETE("/projects/:projectId", handler.deleteProject)
+		protected.POST("/projects/:projectId/members", handler.addProjectMember)
+		protected.PATCH("/projects/:projectId/members/:userId", handler.updateProjectMember)
+		protected.DELETE("/projects/:projectId/members/:userId", handler.removeProjectMember)
+		protected.POST("/projects/:projectId/assets", handler.createProjectAsset)
+		protected.PATCH("/projects/:projectId/assets/:assetId", handler.updateProjectAsset)
+		protected.DELETE("/projects/:projectId/assets/:assetId", handler.deleteProjectAsset)
+		protected.POST("/projects/:projectId/star", handler.starProject)
+		protected.DELETE("/projects/:projectId/star", handler.unstarProject)
+		protected.POST("/projects/:projectId/watch", handler.watchProject)
+		protected.DELETE("/projects/:projectId/watch", handler.unwatchProject)
+
+		// Repository bindings and synchronisation
+		protected.POST("/projects/:projectId/repositories", handler.connectProjectRepository)
+		protected.DELETE("/projects/:projectId/repositories/:bindingId", handler.disconnectProjectRepository)
+		protected.POST("/projects/:projectId/repositories/:bindingId/sync", handler.syncProjectRepository)
+
+		// Organizations
+		protected.POST("/organizations", handler.createOrganization)
+		protected.PATCH("/organizations/:organization", handler.updateOrganization)
+		protected.DELETE("/organizations/:organization", handler.deleteOrganization)
+		protected.POST("/organizations/:organization/members", handler.addOrganizationMember)
+		protected.PATCH("/organizations/:organization/members/:userId", handler.updateOrganizationMember)
+		protected.DELETE("/organizations/:organization/members/:userId", handler.removeOrganizationMember)
+		protected.POST("/organizations/:organization/teams", handler.createOrganizationTeam)
+		protected.DELETE("/organizations/:organization/teams/:team", handler.deleteOrganizationTeam)
+
+		// Provider connections and background queue
+		protected.GET("/integrations/connections", handler.listConnections)
+		protected.POST("/integrations/connections/:provider/authorize", handler.authorizeConnection)
+		protected.DELETE("/integrations/connections/:provider", handler.deleteConnection)
+		protected.GET("/integrations/jobs", handler.listJobs)
 
 		protected.GET("/workspaces", handler.listWorkspaces)
 		protected.POST("/workspaces", handler.createWorkspace)
@@ -452,10 +540,4 @@ func (h *apiHandler) membersResource(c *gin.Context, action string) {
 
 func (h *apiHandler) metrics(c *gin.Context) {
 	c.String(http.StatusOK, "")
-}
-
-func (h *apiHandler) webhook(c *gin.Context) {
-	payload, _ := io.ReadAll(io.LimitReader(c.Request.Body, 1<<20))
-	_ = payload
-	utils.Success(c, http.StatusAccepted, gin.H{"accepted": true})
 }

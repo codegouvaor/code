@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/codegouvaor/code/server/src/interfaces"
@@ -110,6 +111,33 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*models.
 	var user models.User
 	err := r.db.WithContext(ctx).First(&user, "email_normalized = ? OR email = ?", email, email).Error
 	return &user, normalizeNotFound(err, utils.NewError(404, "USER_NOT_FOUND", "The requested user was not found.", nil))
+}
+func (r *userRepository) GetByUsername(ctx context.Context, username string) (*models.User, error) {
+	var user models.User
+	err := r.db.WithContext(ctx).First(&user, "lower(username) = ?", strings.ToLower(strings.TrimSpace(username))).Error
+	return &user, normalizeNotFound(err, utils.NewError(404, "USER_NOT_FOUND", "The requested user was not found.", nil))
+}
+func (r *userRepository) Search(ctx context.Context, query string, offset, limit int) ([]models.User, int64, error) {
+	var items []models.User
+	var count int64
+	builder := r.db.WithContext(ctx).Model(&models.User{}).Where("username IS NOT NULL")
+	if strings.TrimSpace(query) != "" {
+		pattern := "%" + strings.ToLower(strings.TrimSpace(query)) + "%"
+		builder = builder.Where("lower(username) LIKE ? OR lower(display_name) LIKE ?", pattern, pattern)
+	}
+	if err := builder.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+	err := builder.Order("display_name asc").Offset(offset).Limit(limit).Find(&items).Error
+	return items, count, err
+}
+func (r *userRepository) ListByIDs(ctx context.Context, ids []string) ([]models.User, error) {
+	if len(ids) == 0 {
+		return []models.User{}, nil
+	}
+	var items []models.User
+	err := r.db.WithContext(ctx).Where("id IN ?", ids).Find(&items).Error
+	return items, err
 }
 func (r *userRepository) ListStale(ctx context.Context, before time.Time, limit int) ([]models.User, error) {
 	var items []models.User

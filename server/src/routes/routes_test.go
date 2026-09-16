@@ -6,9 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/config"
 	"github.com/codegouvaor/code/server/src/interfaces"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 

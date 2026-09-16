@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func (h *apiHandler) listWebhooks(c *gin.Context) {
@@ -77,10 +77,10 @@ func (h *apiHandler) updateWebhook(c *gin.Context) {
 	}
 
 	var req struct {
-		URL      *string  `json:"url"`
-		Secret   *string  `json:"secret"`
-		Events   []string `json:"events"`
-		Active   *bool    `json:"active"`
+		URL    *string  `json:"url"`
+		Secret *string  `json:"secret"`
+		Events []string `json:"events"`
+		Active *bool    `json:"active"`
 	}
 	if c.ShouldBindJSON(&req) != nil {
 		utils.Error(c, utils.ErrValidationFailed)
@@ -126,12 +126,12 @@ func (h *apiHandler) testWebhook(c *gin.Context) {
 	}
 
 	delivery := &models.WebhookDelivery{
-		WebhookID:   webhook.ID,
-		Event:       "test",
-		Status:      200,
-		RequestBody: `{"test": true}`,
+		WebhookID:    webhook.ID,
+		Event:        "test",
+		Status:       200,
+		RequestBody:  `{"test": true}`,
 		ResponseBody: `{"ok": true}`,
-		Duration:    100,
+		Duration:     100,
 	}
 	delivery.ID = utils.NewID()
 	delivery.CreatedAt = time.Now().UTC()

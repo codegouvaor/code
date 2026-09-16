@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/config"
 	"github.com/codegouvaor/code/server/src/interfaces"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 	"golang.org/x/oauth2/google"
@@ -31,6 +31,18 @@ type OAuthService struct {
 	identity     interfaces.IdentityProvider
 	workspaceSvc *WorkspaceService
 	store        OAuthStateStore
+	// onConnect is set by the platform layer to persist repository-scoped
+	// provider connections. It keeps the OAuth flow in one place while
+	// keeping identity (AuthAccount) and provider grants separate.
+	onConnect func(ctx context.Context, provider, userID string, info *OAuthUserInfo, token *oauth2.Token) error
+}
+
+// SetConnectionHandler registers the callback invoked when the OAuth flow is
+// used to connect a provider for repository access (action=connect).
+func (s *OAuthService) SetConnectionHandler(
+	handler func(ctx context.Context, provider, userID string, info *OAuthUserInfo, token *oauth2.Token) error,
+) {
+	s.onConnect = handler
 }
 
 type OAuthStateStore interface {
@@ -52,6 +64,8 @@ type OAuthUserInfo struct {
 	Email       string
 	DisplayName string
 	AvatarURL   string
+	// Login is the forge handle when the provider exposes one.
+	Login string
 }
 
 type OAuthResult struct {
@@ -116,6 +130,10 @@ func (s *OAuthService) oauthConfig(provider string) (*oauth2.Config, config.OAut
 		pc = s.cfg.Google
 	case "github":
 		pc = s.cfg.GitHub
+	case "gitlab":
+		pc = s.cfg.GitLab
+	case "giteria":
+		pc = s.cfg.Giteria
 	case "discord":
 		pc = s.cfg.Discord
 	case "apple":
@@ -132,6 +150,26 @@ func (s *OAuthService) oauthConfig(provider string) (*oauth2.Config, config.OAut
 	case "github":
 		endpoint = github.Endpoint
 		scopes = []string{"read:user", "user:email"}
+	case "gitlab":
+		base := "https://gitlab.com"
+		if s.cfg.GitLab.BaseURL != "" {
+			base = strings.TrimSuffix(s.cfg.GitLab.BaseURL, "/")
+		}
+		endpoint = oauth2.Endpoint{
+			AuthURL:  base + "/oauth/authorize",
+			TokenURL: base + "/oauth/token",
+		}
+		scopes = []string{"read_api", "read_user"}
+	case "giteria":
+		base := "https://giteria.gouv.aor"
+		if s.cfg.Giteria.BaseURL != "" {
+			base = strings.TrimSuffix(s.cfg.Giteria.BaseURL, "/")
+		}
+		endpoint = oauth2.Endpoint{
+			AuthURL:  base + "/login/oauth/authorize",
+			TokenURL: base + "/login/oauth/access_token",
+		}
+		scopes = []string{"read:repository", "read:user", "read:organization"}
 	case "discord":
 		endpoint = oauth2.Endpoint{
 			AuthURL:  "https://discord.com/api/oauth2/authorize",
@@ -243,9 +281,96 @@ func (s *OAuthService) HandleCallback(ctx context.Context, provider, code, state
 		return s.handleLoginOAuth(ctx, provider, userInfo, token, meta)
 	case "link":
 		return s.handleLinkOAuth(ctx, provider, userInfo, token, state.UserID)
+	case "connect":
+		if s.onConnect == nil {
+			return nil, utils.ErrProviderNotSupported
+		}
+		if state.UserID == "" {
+			return nil, utils.ErrOAuthStateInvalid
+		}
+		if err := s.onConnect(ctx, provider, state.UserID, userInfo, token); err != nil {
+			return nil, err
+		}
+		return &OAuthResult{Linked: true}, nil
 	default:
 		return nil, utils.ErrOAuthStateInvalid
 	}
+}
+
+// fetchGitLabUserInfo reads the GitLab account behind an access token.
+func (s *OAuthService) fetchGitLabUserInfo(ctx context.Context, accessToken string) (*OAuthUserInfo, error) {
+	base := "https://gitlab.com"
+	if s.cfg.GitLab.BaseURL != "" {
+		base = strings.TrimSuffix(s.cfg.GitLab.BaseURL, "/")
+	}
+	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, base+"/api/v4/user", nil)
+	request.Header.Set("Authorization", "Bearer "+accessToken)
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	body, _ := io.ReadAll(io.LimitReader(response.Body, 1<<20))
+
+	var data struct {
+		ID        int    `json:"id"`
+		Username  string `json:"username"`
+		Name      string `json:"name"`
+		Email     string `json:"email"`
+		AvatarURL string `json:"avatar_url"`
+	}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, err
+	}
+	displayName := data.Name
+	if displayName == "" {
+		displayName = data.Username
+	}
+	return &OAuthUserInfo{
+		ID:          fmt.Sprintf("%d", data.ID),
+		Email:       strings.ToLower(strings.TrimSpace(data.Email)),
+		DisplayName: displayName,
+		AvatarURL:   data.AvatarURL,
+		Login:       data.Username,
+	}, nil
+}
+
+// fetchGiteriaUserInfo reads the Giteria account behind an access token.
+func (s *OAuthService) fetchGiteriaUserInfo(ctx context.Context, accessToken string) (*OAuthUserInfo, error) {
+	base := "https://giteria.gouv.aor/api/v1"
+	if s.cfg.Giteria.BaseURL != "" {
+		base = strings.TrimSuffix(s.cfg.Giteria.BaseURL, "/") + "/api/v1"
+	}
+	request, _ := http.NewRequestWithContext(ctx, http.MethodGet, base+"/user", nil)
+	request.Header.Set("Authorization", "Bearer "+accessToken)
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	body, _ := io.ReadAll(io.LimitReader(response.Body, 1<<20))
+
+	var data struct {
+		ID        int64  `json:"id"`
+		Login     string `json:"login"`
+		FullName  string `json:"full_name"`
+		Email     string `json:"email"`
+		AvatarURL string `json:"avatar_url"`
+	}
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, err
+	}
+	displayName := data.FullName
+	if displayName == "" {
+		displayName = data.Login
+	}
+	return &OAuthUserInfo{
+		ID:          fmt.Sprintf("%d", data.ID),
+		Email:       strings.ToLower(strings.TrimSpace(data.Email)),
+		DisplayName: displayName,
+		AvatarURL:   data.AvatarURL,
+		Login:       data.Login,
+	}, nil
 }
 
 func (s *OAuthService) fetchUserInfo(ctx context.Context, provider, accessToken string) (*OAuthUserInfo, error) {
@@ -254,6 +379,10 @@ func (s *OAuthService) fetchUserInfo(ctx context.Context, provider, accessToken 
 		return s.fetchGoogleUserInfo(ctx, accessToken)
 	case "github":
 		return s.fetchGitHubUserInfo(ctx, accessToken)
+	case "gitlab":
+		return s.fetchGitLabUserInfo(ctx, accessToken)
+	case "giteria":
+		return s.fetchGiteriaUserInfo(ctx, accessToken)
 	case "discord":
 		return s.fetchDiscordUserInfo(ctx, accessToken)
 	case "apple":
@@ -371,12 +500,12 @@ func (s *OAuthService) fetchDiscordUserInfo(ctx context.Context, accessToken str
 	body, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
 
 	var data struct {
-		ID            string `json:"id"`
-		Email         string `json:"email"`
-		Username      string `json:"username"`
-		GlobalName    string `json:"global_name"`
-		Avatar        string `json:"avatar"`
-		Verified      bool   `json:"verified"`
+		ID         string `json:"id"`
+		Email      string `json:"email"`
+		Username   string `json:"username"`
+		GlobalName string `json:"global_name"`
+		Avatar     string `json:"avatar"`
+		Verified   bool   `json:"verified"`
 	}
 	if err := json.Unmarshal(body, &data); err != nil {
 		return nil, err
@@ -662,6 +791,10 @@ func oauthScopes(provider string) []string {
 	switch provider {
 	case "github":
 		return []string{"read:user", "user:email"}
+	case "gitlab":
+		return []string{"read_api", "read_user"}
+	case "giteria":
+		return []string{"read:repository", "read:user", "read:organization"}
 	case "discord":
 		return []string{"identify", "email"}
 	case "apple":

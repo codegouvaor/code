@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func (h *apiHandler) listSeoConfigs(c *gin.Context) {

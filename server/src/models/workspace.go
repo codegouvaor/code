@@ -37,9 +37,9 @@ type WorkspaceSSOConfig struct {
 	Enabled           bool           `gorm:"column:enabled;not null;default:false" json:"enabled"`
 	Provider          string         `gorm:"column:provider;type:text" json:"provider"`
 	EnforceSso        bool           `gorm:"column:enforce_sso;not null;default:false" json:"enforceSso"`
-	AllowPasswordAuth  bool          `gorm:"column:allow_password_auth;not null;default:true" json:"allowPasswordAuth"`
+	AllowPasswordAuth bool           `gorm:"column:allow_password_auth;not null;default:true" json:"allowPasswordAuth"`
 	AutoProvision     bool           `gorm:"column:auto_provision;not null;default:false" json:"autoProvision"`
-	AllowIdpInitiated bool          `gorm:"column:allow_idp_initiated;not null;default:false" json:"allowIdpInitiated"`
+	AllowIdpInitiated bool           `gorm:"column:allow_idp_initiated;not null;default:false" json:"allowIdpInitiated"`
 	DomainHint        *string        `gorm:"column:domain_hint;type:text" json:"domainHint,omitempty"`
 	IssuerUrl         *string        `gorm:"column:issuer_url;type:text" json:"issuerUrl,omitempty"`
 	SsoUrl            *string        `gorm:"column:sso_url;type:text" json:"ssoUrl,omitempty"`

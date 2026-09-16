@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func (h *apiHandler) listCategories(c *gin.Context) {
@@ -21,9 +21,9 @@ func (h *apiHandler) listCategories(c *gin.Context) {
 
 func (h *apiHandler) createCategory(c *gin.Context) {
 	var req struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		Color       string `json:"color"`
+		Name        string  `json:"name"`
+		Description string  `json:"description"`
+		Color       string  `json:"color"`
 		ParentID    *string `json:"parentId"`
 	}
 	if c.ShouldBindJSON(&req) != nil {

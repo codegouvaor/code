@@ -20,17 +20,17 @@ func (FAQ) TableName() string { return "faqs" }
 
 type Ticket struct {
 	Common
-	UserID       string         `gorm:"column:user_id;type:text;index;not null" json:"userId"`
-	Subject      string         `gorm:"column:subject;type:text;not null" json:"subject"`
-	Description  string         `gorm:"column:description;type:text;not null" json:"description"`
-	Status       string         `gorm:"column:status;type:text;not null;default:'open'" json:"status"`
-	Priority     string         `gorm:"column:priority;type:text;not null;default:'medium'" json:"priority"`
-	Category     string         `gorm:"column:category;type:text;not null;default:'general'" json:"category"`
-	AssignedTo   *string        `gorm:"column:assigned_to;type:text" json:"assignedTo,omitempty"`
-	ResolvedAt   *time.Time     `gorm:"column:resolved_at" json:"resolvedAt,omitempty"`
-	ClosedAt     *time.Time     `gorm:"column:closed_at" json:"closedAt,omitempty"`
-	Metadata     datatypes.JSON `gorm:"column:metadata;type:jsonb" json:"metadata,omitempty"`
-	DeletedAt    gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
+	UserID      string         `gorm:"column:user_id;type:text;index;not null" json:"userId"`
+	Subject     string         `gorm:"column:subject;type:text;not null" json:"subject"`
+	Description string         `gorm:"column:description;type:text;not null" json:"description"`
+	Status      string         `gorm:"column:status;type:text;not null;default:'open'" json:"status"`
+	Priority    string         `gorm:"column:priority;type:text;not null;default:'medium'" json:"priority"`
+	Category    string         `gorm:"column:category;type:text;not null;default:'general'" json:"category"`
+	AssignedTo  *string        `gorm:"column:assigned_to;type:text" json:"assignedTo,omitempty"`
+	ResolvedAt  *time.Time     `gorm:"column:resolved_at" json:"resolvedAt,omitempty"`
+	ClosedAt    *time.Time     `gorm:"column:closed_at" json:"closedAt,omitempty"`
+	Metadata    datatypes.JSON `gorm:"column:metadata;type:jsonb" json:"metadata,omitempty"`
+	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
 }
 
 func (Ticket) TableName() string { return "tickets" }
@@ -47,12 +47,12 @@ func (TicketReply) TableName() string { return "ticket_replies" }
 
 type ContactMessage struct {
 	Common
-	Name    string `gorm:"column:name;type:text;not null" json:"name"`
-	Email   string `gorm:"column:email;type:text;not null" json:"email"`
-	Subject string `gorm:"column:subject;type:text;not null" json:"subject"`
-	Message string `gorm:"column:message;type:text;not null" json:"message"`
-	Status  string `gorm:"column:status;type:text;not null;default:'unread'" json:"status"`
-	ReadAt  *time.Time `gorm:"column:read_at" json:"readAt,omitempty"`
+	Name      string     `gorm:"column:name;type:text;not null" json:"name"`
+	Email     string     `gorm:"column:email;type:text;not null" json:"email"`
+	Subject   string     `gorm:"column:subject;type:text;not null" json:"subject"`
+	Message   string     `gorm:"column:message;type:text;not null" json:"message"`
+	Status    string     `gorm:"column:status;type:text;not null;default:'unread'" json:"status"`
+	ReadAt    *time.Time `gorm:"column:read_at" json:"readAt,omitempty"`
 	RepliedAt *time.Time `gorm:"column:replied_at" json:"repliedAt,omitempty"`
 }
 

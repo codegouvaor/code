@@ -25,13 +25,13 @@ func (Webhook) TableName() string { return "webhooks" }
 
 type WebhookDelivery struct {
 	Common
-	WebhookID   string `gorm:"column:webhook_id;type:text;index;not null" json:"webhookId"`
-	Event       string `gorm:"column:event;type:text;not null" json:"event"`
-	Status      int    `gorm:"column:status;not null" json:"status"`
-	RequestBody string `gorm:"column:request_body;type:text" json:"-"`
+	WebhookID    string `gorm:"column:webhook_id;type:text;index;not null" json:"webhookId"`
+	Event        string `gorm:"column:event;type:text;not null" json:"event"`
+	Status       int    `gorm:"column:status;not null" json:"status"`
+	RequestBody  string `gorm:"column:request_body;type:text" json:"-"`
 	ResponseBody string `gorm:"column:response_body;type:text" json:"-"`
-	Duration    int    `gorm:"column:duration;not null;default:0" json:"duration"`
-	Error       string `gorm:"column:error;type:text" json:"error,omitempty"`
+	Duration     int    `gorm:"column:duration;not null;default:0" json:"duration"`
+	Error        string `gorm:"column:error;type:text" json:"error,omitempty"`
 }
 
 func (WebhookDelivery) TableName() string { return "webhook_deliveries" }

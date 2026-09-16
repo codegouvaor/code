@@ -3,8 +3,8 @@ package middleware
 import (
 	"log/slog"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 func Recovery(logger *slog.Logger) gin.HandlerFunc {

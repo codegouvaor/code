@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/config"
 	"github.com/codegouvaor/code/server/src/interfaces"
 	"github.com/codegouvaor/code/server/src/models"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -97,7 +97,7 @@ func (s *AuthService) Register(ctx context.Context, req RegisterInput, meta Requ
 
 	now := time.Now().UTC()
 	userID := utils.NewID()
-	
+
 	isFirstUser := s.isFirstUser(ctx)
 
 	user := &models.User{

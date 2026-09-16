@@ -11,6 +11,9 @@ type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
 	GetByID(ctx context.Context, id string) (*models.User, error)
 	GetByEmail(ctx context.Context, email string) (*models.User, error)
+	GetByUsername(ctx context.Context, username string) (*models.User, error)
+	Search(ctx context.Context, query string, offset, limit int) ([]models.User, int64, error)
+	ListByIDs(ctx context.Context, ids []string) ([]models.User, error)
 	ListStale(ctx context.Context, before time.Time, limit int) ([]models.User, error)
 	Update(ctx context.Context, user *models.User) error
 }
@@ -229,4 +232,21 @@ type RepositorySet interface {
 	SeoConfigs() SeoConfigRepository
 	NewsletterSubscribers() NewsletterSubscriberRepository
 	Schedules() ScheduleRepository
+
+	// Platform domain
+	Organizations() OrganizationRepository
+	OrganizationMembers() OrganizationMemberRepository
+	Projects() ProjectRepository
+	ProjectMembers() ProjectMemberRepository
+	ProjectAssets() ProjectAssetRepository
+	RepositoryBindings() RepositoryBindingRepository
+	ProviderConnections() ProviderConnectionRepository
+	SyncCursors() SyncCursorRepository
+	WebhookSubscriptions() WebhookSubscriptionRepository
+	SyncJobs() SyncJobRepository
+	ExternalResources() ExternalResourceRepository
+	OrganizationTeams() OrganizationTeamRepository
+	OrganizationTeamMembers() OrganizationTeamMemberRepository
+	ProjectStars() ProjectStarRepository
+	ProjectWatches() ProjectWatchRepository
 }

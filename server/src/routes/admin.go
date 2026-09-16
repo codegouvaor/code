@@ -12,19 +12,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/codegouvaor/code/server/src/utils"
+	"github.com/gin-gonic/gin"
 )
 
 const dockerSocket = "/var/run/docker.sock"
 
 type dockerContainerInfo struct {
-	ID      string            `json:"Id"`
-	Names   []string          `json:"Names"`
-	State   string            `json:"State"`
-	Status  string            `json:"Status"`
-	Image   string            `json:"Image"`
-	Labels  map[string]string `json:"Labels"`
+	ID     string            `json:"Id"`
+	Names  []string          `json:"Names"`
+	State  string            `json:"State"`
+	Status string            `json:"Status"`
+	Image  string            `json:"Image"`
+	Labels map[string]string `json:"Labels"`
 }
 
 type dockerLogEntry struct {

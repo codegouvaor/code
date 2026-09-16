@@ -73,5 +73,21 @@ func (d *DatabaseService) AutoMigrate() error {
 		&models.SeoConfig{},
 		&models.NewsletterSubscriber{},
 		&models.Schedule{},
+		// Platform layer (Code-native projects, providers and synchronisation).
+		&models.Organization{},
+		&models.OrganizationMember{},
+		&models.OrganizationTeam{},
+		&models.OrganizationTeamMember{},
+		&models.Project{},
+		&models.ProjectMember{},
+		&models.ProjectAsset{},
+		&models.ProjectStar{},
+		&models.ProjectWatch{},
+		&models.RepositoryBinding{},
+		&models.ProviderConnection{},
+		&models.SyncCursor{},
+		&models.WebhookSubscription{},
+		&models.SyncJob{},
+		&models.ExternalResource{},
 	)
 }

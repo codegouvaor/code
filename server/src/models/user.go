@@ -6,6 +6,11 @@ import (
 
 type User struct {
 	Common
+	// Username is the Code handle used by the platform routes
+	// (/[owner]/[repo]). It is nullable so that accounts created before the
+	// platform layer still work; the API refuses to expose a profile without
+	// one and lets the user claim it explicitly.
+	Username          *string    `gorm:"column:username;type:text;uniqueIndex" json:"username,omitempty"`
 	Email             string     `gorm:"column:email;type:text;not null" json:"email"`
 	EmailNormalized   string     `gorm:"column:email_normalized;type:text;uniqueIndex" json:"-"`
 	DisplayName       string     `gorm:"column:display_name;type:text;not null" json:"displayName"`

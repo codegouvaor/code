@@ -8,15 +8,22 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	redisclient "github.com/codegouvaor/code/server/internal/redis"
 	"github.com/codegouvaor/code/server/src/config"
 	"github.com/codegouvaor/code/server/src/middleware"
+	"github.com/codegouvaor/code/server/src/models"
+	"github.com/codegouvaor/code/server/src/providers"
+	"github.com/codegouvaor/code/server/src/providers/giteria"
+	"github.com/codegouvaor/code/server/src/providers/github"
+	"github.com/codegouvaor/code/server/src/providers/gitlab"
 	"github.com/codegouvaor/code/server/src/routes"
 	"github.com/codegouvaor/code/server/src/services"
+	"github.com/gin-gonic/gin"
+	"golang.org/x/oauth2"
 )
 
 type runtimeMode string
@@ -58,6 +65,65 @@ func parseRuntimeMode(args []string) (runtimeMode, error) {
 	default:
 		return "", fmt.Errorf("unknown mode %q", args[0])
 	}
+}
+
+// buildProviderRegistry registers the forge adapters the platform knows about.
+// A provider that is not configured is simply not registered: capabilities and
+// descriptors are always derived from the registry, never hard-coded in a
+// handler.
+func buildProviderRegistry(cfg config.ProvidersConfig) *providers.Registry {
+	registry := providers.NewRegistry()
+	if cfg.GitHub.Enabled {
+		registry.Register(github.Descriptor, github.Factory)
+	}
+	if cfg.GitLab.Enabled {
+		registry.Register(gitlab.Descriptor, gitlab.Factory)
+	}
+	if cfg.Giteria.Enabled {
+		registry.Register(giteria.Descriptor, giteria.Factory)
+	}
+	return registry
+}
+
+// oauthScopesFor mirrors the scopes requested by the OAuth service for the
+// providers that support repository access.
+func oauthScopesFor(provider string) []string {
+	switch provider {
+	case models.ProviderGitHub:
+		return []string{"read:user", "user:email"}
+	case models.ProviderGitLab:
+		return []string{"read_api", "read_user"}
+	case models.ProviderGiteria:
+		return []string{"read:repository", "read:user", "read:organization"}
+	default:
+		return nil
+	}
+}
+
+// startReconciliation schedules the periodic reconciliation job that refreshes
+// bindings which have not been synchronised recently.
+func startReconciliation(ctx context.Context, logger *slog.Logger, jobs *services.JobService, interval time.Duration) {
+	if jobs == nil || interval <= 0 {
+		return
+	}
+	go func() {
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				bucket := time.Now().UTC().Format("20060102T15")
+				if _, err := jobs.Submit(ctx, services.EnqueueInput{
+					Kind:           models.SyncJobReconciliation,
+					IdempotencyKey: "reconciliation:" + bucket,
+				}); err != nil {
+					logger.Warn("reconciliation not scheduled", "error", err)
+				}
+			}
+		}
+	}()
 }
 
 func runHTTPServer(ctx context.Context, logger *slog.Logger, cfg config.Config, handler http.Handler, serviceRole runtimeMode) error {
@@ -156,6 +222,81 @@ func main() {
 	oauthService := services.NewOAuthService(cfg.OAuth, repos, authService, identityProvider, workspaceService, nil)
 	mfaService := services.NewMfaService(cfg.Auth, db, repos)
 
+	// ── Platform layer ───────────────────────────────────────────────────────
+	// The Go API is the business facade of Code: projects, organizations and
+	// provider access all live here, never in the frontend.
+	registry := buildProviderRegistry(cfg.Providers)
+	providerCache := redisclient.NewCache(redis, cfg.Providers.CacheTTL)
+	authorizer := services.NewAuthorizer(
+		repos.Projects(),
+		repos.ProjectMembers(),
+		repos.Organizations(),
+		repos.OrganizationMembers(),
+		repos.OrganizationTeamMembers(),
+	)
+	connectionService, err := services.NewProviderConnectionService(
+		repos.ProviderConnections(), registry, cfg.Providers, eventBus,
+	)
+	if err != nil {
+		logger.Error("provider connection service unavailable", "error", err)
+		os.Exit(1)
+	}
+	jobService := services.NewJobService(repos.SyncJobs(), eventBus, logger)
+	ownerService := services.NewOwnerService(
+		repos.Users(), repos.Organizations(), repos.OrganizationMembers(), repos.OrganizationTeams(),
+		repos.Projects(), repos.RepositoryBindings(), repos.ProjectStars(), authorizer,
+	)
+	organizationService := services.NewOrganizationService(
+		repos.Organizations(), repos.OrganizationMembers(), repos.OrganizationTeams(),
+		repos.OrganizationTeamMembers(), repos.Users(), eventBus, authorizer, ownerService,
+	)
+	projectService := services.NewProjectService(
+		repos.Projects(), repos.ProjectMembers(), repos.ProjectAssets(), repos.ProjectStars(),
+		repos.ProjectWatches(), repos.RepositoryBindings(), repos.Organizations(),
+		repos.OrganizationMembers(), repos.Users(), registry, eventBus, authorizer,
+	)
+	syncService := services.NewSyncService(
+		repos.Projects(), repos.RepositoryBindings(), repos.ExternalResources(), repos.SyncCursors(),
+		repos.WebhookSubscriptions(), repos.Users(), connectionService, eventBus, jobService,
+		authorizer, logger,
+	)
+	syncService.RegisterHandlers()
+	repositoryService := services.NewRepositoryService(
+		repos.Projects(), repos.RepositoryBindings(), repos.Organizations(), repos.Users(),
+		repos.ExternalResources(), connectionService, authorizer, providerCache,
+		cfg.Redis.KeyPrefix, cfg.Providers.CacheTTL, eventBus, logger,
+	)
+	searchService := services.NewSearchService(
+		services.NewPostgresSearchEngine(repos.Projects(), repos.Organizations(), repos.ProjectAssets(), repos.Users()),
+	)
+
+	// The OAuth flow is reused for repository access: the callback stores a
+	// ProviderConnection, never a second identity system.
+	oauthService.SetConnectionHandler(func(
+		ctx context.Context, provider, userID string, info *services.OAuthUserInfo, token *oauth2.Token,
+	) error {
+		var expiresAt *time.Time
+		if !token.Expiry.IsZero() {
+			expiry := token.Expiry.UTC()
+			expiresAt = &expiry
+		}
+		_, upsertErr := connectionService.Upsert(ctx, userID, services.ConnectionInput{
+			Provider:          provider,
+			ProviderAccountID: info.ID,
+			AccountLogin:      info.Login,
+			AvatarURL:         info.AvatarURL,
+			Scopes:            strings.Join(oauthScopesFor(provider), " "),
+			AccessToken:       token.AccessToken,
+			RefreshToken:      token.RefreshToken,
+			ExpiresAt:         expiresAt,
+		})
+		return upsertErr
+	})
+
+	jobService.Start(ctx)
+	defer jobService.Stop()
+	startReconciliation(ctx, logger, jobService, 30*time.Minute)
+
 	mode, err := parseRuntimeMode(os.Args[1:])
 	if err != nil {
 		logger.Error("unknown mode", "error", err)
@@ -171,19 +312,27 @@ func main() {
 		_ = router.SetTrustedProxies(cfg.App.TrustedProxies)
 	}
 	routes.SetupRoutes(router, routes.Dependencies{
-		Config:           cfg,
-		Logger:           logger,
-		Database:         db,
-		Redis:            redis,
-		EventBus:         eventBus,
-		IdentityProvider: identityProvider,
-		AuthService:      authService,
-		OAuthService:     oauthService,
-		UserService:      userService,
-		WorkspaceService: workspaceService,
-		Repos:            repos,
-		MfaService:       mfaService,
-		RuntimeRole:      string(mode),
+		Config:              cfg,
+		Logger:              logger,
+		Database:            db,
+		Redis:               redis,
+		EventBus:            eventBus,
+		IdentityProvider:    identityProvider,
+		AuthService:         authService,
+		OAuthService:        oauthService,
+		UserService:         userService,
+		WorkspaceService:    workspaceService,
+		Repos:               repos,
+		MfaService:          mfaService,
+		RuntimeRole:         string(mode),
+		OwnerService:        ownerService,
+		OrganizationService: organizationService,
+		ProjectService:      projectService,
+		RepositoryService:   repositoryService,
+		ConnectionService:   connectionService,
+		SyncService:         syncService,
+		JobService:          jobService,
+		SearchService:       searchService,
 	})
 
 	if err := runHTTPServer(ctx, logger, cfg, router, mode); err != nil {

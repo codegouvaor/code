@@ -37,9 +37,9 @@ func TestValidateProductionRequiresStrongJWTSecret(t *testing.T) {
 		App:    AppConfig{Env: "production"},
 		Server: ServerConfig{Port: "8080"},
 		Auth: AuthConfig{
-			Enabled:  true,
-			Mode:     "jwt",
-			JWTSecret: "weak",
+			Enabled:                true,
+			Mode:                   "jwt",
+			JWTSecret:              "weak",
 			LocalEnabled:           true,
 			JWTIssuer:              "test",
 			JWTAccessTTL:           1,
