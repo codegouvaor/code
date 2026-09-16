@@ -14,7 +14,7 @@
     "clean": "rm -rf .next out .expo"
   },
   "dependencies": {
-    "@codegouvaor/react-ads": "^1.0.5",
+    "@codegouvaor/react-ads": "^1.0.10",
     "@hookform/resolvers": "^5.2.2",
     "@loglayer/transport-pino": "^3.2.0",
     "@next/third-parties": "16.2.12",
