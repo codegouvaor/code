@@ -240,7 +240,7 @@
   },
   "home": {
     "meta": {
-      "title": "CODE.GOUV.AOR — La plateforme développeur du numérique public d'Astoria"
+      "title": "La plateforme développeur du numérique public d'Astoria"
     },
     "hero": {
       "kicker": "Plateforme développeur",
@@ -481,8 +481,8 @@
     }
   },
   "meta": {
-    "defaultTitle": "CODE.GOUV.AOR — La plateforme publique du numérique d'Astoria",
-    "suffix": "CODE.GOUV.AOR",
+    "defaultTitle": "La plateforme publique du numérique d'Astoria",
+    "suffix": "code.gouv.aor",
     "description": "La plateforme publique de référence pour définir, concevoir, construire, déployer, exploiter et faire évoluer le numérique public d'Astoria.",
     "searchPlaceholder": "Rechercher dans CODE"
   }

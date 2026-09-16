@@ -240,7 +240,7 @@
   },
   "home": {
     "meta": {
-      "title": "CODE.GOUV.AOR — The developer platform for Astoria's public digital services"
+      "title": "The developer platform for Astoria's public digital services"
     },
     "hero": {
       "kicker": "Developer platform",
@@ -481,8 +481,8 @@
     }
   },
   "meta": {
-    "defaultTitle": "CODE.GOUV.AOR — The public platform of Astoria's digital technology",
-    "suffix": "CODE.GOUV.AOR",
+    "defaultTitle": "The public platform of Astoria's digital technology",
+    "suffix": "code.gouv.aor",
     "description": "The public reference platform for defining, designing, building, deploying, operating and evolving Astoria's public digital infrastructure.",
     "searchPlaceholder": "Search in CODE"
   }

@@ -9,7 +9,6 @@ import {
   Calendar,
   Users,
   Mail,
-  Twitter,
   Briefcase,
   Heart,
   Star,
@@ -20,6 +19,7 @@ import {
   Sword,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { TwitterIcon } from "@/components/ui/icons/TwitterIcon";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/auth/types";
 
@@ -38,7 +38,7 @@ interface Achievement {
 interface SocialLink {
   platform: string;
   url: string;
-  icon: LucideIcon;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const ACHIEVEMENTS: Achievement[] = [
@@ -121,7 +121,7 @@ export function UserSidebar({ user }: UserSidebarProps) {
     socialLinks.push({
       platform: "Twitter",
       url: `https://twitter.com/${safeProfile.twitter}`,
-      icon: Twitter,
+      icon: TwitterIcon,
     });
   }
   if (safeProfile.website) {
@@ -220,7 +220,7 @@ export function UserSidebar({ user }: UserSidebarProps) {
 
             {safeProfile.twitter && (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Twitter className="w-4 h-4 shrink-0" />
+                <TwitterIcon className="w-4 h-4 shrink-0" />
                 <a
                   href={`https://twitter.com/${safeProfile.twitter}`}
                   target="_blank"
