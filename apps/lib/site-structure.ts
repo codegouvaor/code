@@ -342,10 +342,10 @@ export const lifecycleThemes: ReadonlyArray<LifecycleTheme> = [
       {
         titleKey: "evoluerCategoryContribuer",
         links: [
-          { labelKey: "contributions", href: "/faire-evoluer/contributions" },
-          { labelKey: "rfc", href: "/faire-evoluer/rfc" },
-          { labelKey: "openSource", href: "/faire-evoluer/open-source" },
-          { labelKey: "communaute", href: "/faire-evoluer/communaute" },
+          { labelKey: "contributions", href: "/contributions" },
+          { labelKey: "rfc", href: "/contributions/rfc" },
+          { labelKey: "openSource", href: "/contributions/open-source" },
+          { labelKey: "communaute", href: "/contributions/communaute" },
         ],
       },
       {
@@ -473,22 +473,22 @@ export const headerNavigation: ReadonlyArray<HeaderNavEntry> = [
       {
         titleKey: "contribuer",
         links: [
-          { labelKey: "contributions", href: "/faire-evoluer/contributions" },
-          { labelKey: "openSource", href: "/faire-evoluer/open-source" },
-          { labelKey: "packages", href: "/construire/packages" },
-          { labelKey: "sdk", href: "/construire/sdk" },
-          { labelKey: "cli", href: "/construire/cli" },
-          { labelKey: "ads", href: "/construire/ads" },
+          { labelKey: "contributions", href: "/contributions" },
+          { labelKey: "openSource", href: "/contributions/open-source" },
+          { labelKey: "packages", href: "/contributions/packages" },
+          { labelKey: "sdk", href: "/contributions/sdk" },
+          { labelKey: "cli", href: "/contributions/cli" },
+          { labelKey: "ads", href: "/contributions/ads" },
         ],
       },
       {
         titleKey: "communauteCategoryProposer",
         links: [
-          { labelKey: "rfc", href: "/faire-evoluer/rfc" },
+          { labelKey: "rfc", href: "/propose-and-discuss/rfc" },
           { labelKey: "standards", href: portalPaths.standards },
-          { labelKey: "gouvernanceTechnique", href: "/definir/gouvernance-technique" },
-          { labelKey: "innovation", href: "/faire-evoluer/innovation" },
-          { labelKey: "recherche", href: "/faire-evoluer/recherche" },
+          { labelKey: "gouvernanceTechnique", href: "/propose-and-discuss/gouvernance-technique" },
+          { labelKey: "innovation", href: "/propose-and-discuss/innovation" },
+          { labelKey: "recherche", href: "/propose-and-discuss/recherche" },
         ],
       },
       {

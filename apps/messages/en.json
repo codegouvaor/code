@@ -3,11 +3,11 @@
     "republicName": "Republic of Astoria"
   },
   "header": {
-    "homeTitle": "Back to homepage — CODE.GOUV.AOR",
-    "serviceTitle": "CODE.GOUV.AOR",
-    "serviceTagline": "Astoria's public digital infrastructure",
+    "homeTitle": "Back to homepage — code.gouv.aor",
+    "serviceTitle": "Joint Open-Source and Digital Division",
+    "serviceTagline": "Using and contributing to open-source software and digital standards",
     "loginLink": "Log in",
-    "githubTitle": "CODE.GOUV.AOR source repository — opens in a new window",
+    "githubTitle": "code.gouv.aor source repository — opens in a new window",
     "accountLabel": "My account",
     "logoutLink": "Log out",
     "account": {

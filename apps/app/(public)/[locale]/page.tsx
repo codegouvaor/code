@@ -75,7 +75,7 @@ export default async function HomePage({ params }: PageProps) {
       >
         <div className="gov-section__container">
           <div className="fr-grid-row fr-grid-row--center">
-            <div className="fr-col-10 fr-col-md-6">
+            <div className="fr-col-10 fr-col-md-2 fr-col-lg-6 gov-code-hero__text">
               <h1 id="home-hero-title" className="gov-code-hero__title">
                 {t("hero.title")}
               </h1>

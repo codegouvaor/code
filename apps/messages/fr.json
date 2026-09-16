@@ -5,7 +5,7 @@
   "header": {
     "homeTitle": "Retour à l'accueil — code.gouv.aor",
     "serviceTitle": "Pôle open-source et numérique commun",
-    "serviceTagline": "La plateforme de référence pour construire le numérique public d’Astoria",
+    "serviceTagline": "Employer et contribuer aux logiciels libres et aux standards numériques",
     "loginLink": "Se connecter",
     "githubTitle": "Dépôt source de code.gouv.aor — nouvelle fenêtre",
     "accountLabel": "Mon compte",
@@ -166,7 +166,7 @@
       "title": "Pôle open-source et numérique commun"
     },
     "hero": {
-      "title": "Construire le numérique public.",
+      "title": "Pôle open-source et numérique commun.",
       "lead": "Nous accompagnons les administrations d'Astoria pour renforcer leur <strong>utilisation</strong> des standards et des communs numériques, soutenir leurs démarches de <strong>publication</strong> et de mutualisation des codes sources et <strong>créer des liens</strong> avec l'écosystème open source."
     },
     "doors": {
