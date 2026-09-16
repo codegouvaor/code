@@ -70,7 +70,10 @@
       ],
       "@/constents/*": [
         "./constents/*"
-      ]
+      ],
+      "@/options/*": [
+        "./options/*"
+      ],
     },
     "types": [
       "next",
