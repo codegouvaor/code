@@ -148,7 +148,6 @@ COPY apps/context/             ./apps/context/
 COPY apps/hooks/               ./apps/hooks/
 COPY apps/lib/                 ./apps/lib/
 COPY apps/public/              ./apps/public/
-COPY apps/styles/              ./apps/styles/
 COPY apps/middleware.ts        ./apps/middleware.ts
 
 # ── Config ──────────────────────────────────────────────────────────────────

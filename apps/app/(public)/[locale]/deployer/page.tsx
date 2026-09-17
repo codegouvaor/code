@@ -3,8 +3,8 @@ import {
   placeholderMetadata,
 } from "@/components/public/content/placeholder-page";
 
-export const metadata = placeholderMetadata("Contributions");
+export const metadata = placeholderMetadata("Déployer");
 
 export default function Page() {
-  return <PlaceholderPage title="Contributions" />;
+  return <PlaceholderPage title="Déployer" />;
 }
